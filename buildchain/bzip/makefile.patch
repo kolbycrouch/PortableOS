@@ -1,0 +1,15 @@
+--- bzip2-1.0.6/Makefile	2018-12-10 23:38:12.509416867 -0600
++++ bzip2-1.0.6/Makefile.new	2018-12-10 23:39:20.746416742 -0600
+@@ -21,10 +21,10 @@
+ LDFLAGS=
+ 
+ BIGFILES=-D_FILE_OFFSET_BITS=64
+-CFLAGS=-Wall -Winline -O2 -g $(BIGFILES)
++CFLAGS=-Wall -Winline -O2 -g -fPIC $(BIGFILES)
+ 
+ # Where you want it installed when you do 'make install'
+-PREFIX=/usr/local
++PREFIX=REPLACE
+ 
+ 
+ OBJS= blocksort.o  \

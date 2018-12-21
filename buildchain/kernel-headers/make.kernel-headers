@@ -1,0 +1,3 @@
+cd ${PLATFORM}-headers &&
+. make.${PLATFORM}-headers &&
+cd $TCDIR

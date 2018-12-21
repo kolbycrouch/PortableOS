@@ -1,0 +1,6 @@
+./include
+./lib/lib*.a
+./lib/lib*.la
+./lib/*/lib*.a
+./lib/*/lib*.la
+

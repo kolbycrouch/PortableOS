@@ -1,0 +1,11 @@
+${FETCHCMD} https://ftp.gnu.org/gnu/mpc/mpc-1.1.0.tar.gz
+SRCDIR=mpc-1.1.0
+${RMCMD} ${SRCDIR}
+${TARCMD} -vxf *.tar.gz
+../patcher
+cd $SRCDIR
+${MKDIRCMD} build
+cd build
+../configure --prefix=${FINPREFIX} --host=$HOSTARCH --target=$MACHARCH &&
+${MKCMD} &&
+${MKCMD} install

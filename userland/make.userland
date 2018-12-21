@@ -1,0 +1,37 @@
+## Below is the list of user defined variables for the build.
+##
+
+export FINPREFIX=/.tmp/.pkg/gnuu
+export MACHARCH=x86_64-linux-musl
+
+##
+##
+
+## Below is a list of variables for the tools used to build the userland.
+## Strive for best compatibility for alternative tools if possible.
+
+export TARCMD="tar $@" 
+export PATCHCMD="patch $@"
+export MKDIRCMD="mkdir -p $@"
+export FETCHCMD="wget -nc $@"
+export TCDIR="$(pwd)"
+export MKCMD="make $@"	
+export SEDCMD="sed $@"
+export RMCMD="rm -rf $@"
+export CPCMD="cp -rvf $@"
+
+##
+##
+
+cd gnu &&
+. make.gnu &&
+cd $TCDIR
+
+#cd suckless &&
+#. make.suckless &&
+#cd $TCDIR &&
+
+#cd busybox &&
+#. make.busybox &&
+#cd $TCDIR &&
+

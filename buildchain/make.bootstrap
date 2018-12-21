@@ -1,0 +1,57 @@
+THISDIR="$(pwd)"
+
+build-musl () { cd musl && . make.musl && cd $THISDIR; }
+build-kernel-headers () { cd kernel-headers && . make.kernel-headers && cd $THISDIR; }
+build-glibc () { cd glibc && . make.glibc && cd $THISDIR; }
+build-gmp () { cd gmp && . make.gmp && cd $THISDIR; }
+build-mpfr () { cd mpfr && . make.mpfr && cd $THISDIR; }
+build-mpc () { cd mpc && . make.mpc && cd $THISDIR; }
+build-libressl () { cd libressl && . make.libressl && cd $THISDIR; }
+build-binutils () { cd binutils && . make.binutils && cd $THISDIR; }
+build-gcc () { cd gcc && . make.gcc && cd $THISDIR; }
+build-gettext () { cd gettext && . make.gettext && cd $THISDIR; }
+build-diff () { cd diff && . make.diff && cd $THISDIR; }
+build-make () { cd make && . make.make && cd $THISDIR; }
+build-patch () { cd patch && . make.patch && cd $THISDIR; }
+build-ncurses () { cd ncurses && . make.ncurses && cd $THISDIR; }
+build-zlib () { cd zlib && . make.zlib && cd $THISDIR; }
+build-bzip () { cd bzip && . make.bzip && cd $THISDIR; }
+build-libarchive () { cd libarchive && . make.libarchive && cd $THISDIR; }
+make-package () { . make.pkg; }
+
+
+	build-kernel-headers
+	
+	if [[ "$MACHARCH" =~ .*gnu ]]; then
+		build-glibc
+	elif [[ "$MACHARCH" =~ .*musl ]]; then
+		build-musl
+	else
+		echo "You must specify a valid tuple in the configuration at the start of this file"
+		echo "Read the file "tuples.valid" to see a list of valid tuples"
+		exit 1
+	fi
+
+	build-gmp &&
+	build-mpfr &&
+	build-mpc &&
+#	build-binutils &&
+#	build-gcc &&	
+	build-libressl &&
+	build-bzip &&
+	build-zlib &&
+
+	## This is the start of the second bootstrap phase for the toolchain.
+	## We simply reconfigure some environment variables and rebuild compiler and linker.
+
+#	export CC=${FINPREFIX}/bin/gcc
+#	export CXX=${FINPREFIX}/bin/g++
+#	export LIBRARY_PATH=${FINPREFIX}/lib
+#	export PKG_CONFIG_LIBDIR=${FINPREFIX}/lib/pkgconfig
+#	export HOSTARCH=${MACHARCH}
+
+	##
+	##
+	
+	echo "Build Successful!"
+

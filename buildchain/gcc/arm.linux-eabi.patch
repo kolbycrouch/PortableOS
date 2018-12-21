@@ -1,0 +1,22 @@
+--- gcc-8.2.0/gcc/config/arm/linux-eabi.h	2018-01-03 10:03:58.000000000 +0000
++++ gcc-8.2.0/gcc/config/arm/linux-eabi.h.new	2018-11-11 16:02:48.270000000 +0000
+@@ -62,8 +62,8 @@
+    GLIBC_DYNAMIC_LINKER_DEFAULT and TARGET_DEFAULT_FLOAT_ABI.  */
+ 
+ #undef  GLIBC_DYNAMIC_LINKER
+-#define GLIBC_DYNAMIC_LINKER_SOFT_FLOAT "/lib/ld-linux.so.3"
+-#define GLIBC_DYNAMIC_LINKER_HARD_FLOAT "/lib/ld-linux-armhf.so.3"
++#define GLIBC_DYNAMIC_LINKER_SOFT_FLOAT "REPLACE/lib/ld-linux.so.3"
++#define GLIBC_DYNAMIC_LINKER_HARD_FLOAT "REPLACE/lib/ld-linux-armhf.so.3"
+ #define GLIBC_DYNAMIC_LINKER_DEFAULT GLIBC_DYNAMIC_LINKER_SOFT_FLOAT
+ 
+ #define GLIBC_DYNAMIC_LINKER \
+@@ -86,7 +86,7 @@
+ #define MUSL_DYNAMIC_LINKER_E "%{mbig-endian:eb}"
+ #endif
+ #define MUSL_DYNAMIC_LINKER \
+-  "/lib/ld-musl-arm" MUSL_DYNAMIC_LINKER_E "%{mfloat-abi=hard:hf}.so.1"
++  "REPLACE/lib/ld-musl-arm" MUSL_DYNAMIC_LINKER_E "%{mfloat-abi=hard:hf}.so.1"
+ 
+ /* At this point, bpabi.h will have clobbered LINK_SPEC.  We want to
+    use the GNU/Linux version, not the generic BPABI version.  */

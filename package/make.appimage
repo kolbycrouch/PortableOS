@@ -1,0 +1,9 @@
+source ./make.config
+export PKGDEFAULTNAME=emacs-26.1
+${MKDIRCMD} releases 
+if [[ "$MACHARCH" =~ .*gnu ]]; then
+ ./appimage/AppImageTool.${PLATFORM}-glibc-x64 working.prefix releases/${PKGDEFAULTNAME} 
+elif [[ "$MACHARCH" =~ .*gnu ]]; then
+ ./appimage/AppImageTool.${PLATFORM}-musl-x64 working.prefix releases/${PKGDEFAULTNAME}
+fi
+${ECHOCMD} "$PKGDEFAULTNAME has been packaged!"

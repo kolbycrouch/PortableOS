@@ -1,0 +1,11 @@
+${MKDIRCMD} tmpdir
+for file in *.patch ; do
+	${CPCMD} "$file" tmpdir
+done
+for file in tmpdir/*.patch ; do
+	${SEDCMD} -i -e "s:REPLACE:${FINPREFIX}:g" "$file"
+done
+for file in tmpdir/*.patch ; do
+	${PATCHCMD} -p0 < "$file"
+done
+${RMCMD} tmpdir

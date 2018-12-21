@@ -1,0 +1,14 @@
+## Valid x86 tuples.
+##
+
+x86_64-linux-gnu
+x86_64-linux-musl
+
+## Valid arm tuples.
+## 
+
+arm-linux-gnu 
+arm-linux-musl
+aarch64-linux-gnu
+aarch64-linux-musl
+

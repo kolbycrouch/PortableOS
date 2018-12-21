@@ -1,0 +1,7 @@
+export PATH=REPLACE/bin:REPLACE/sbin:$PATH
+export CC=REPLACE/bin/gcc
+export CXX=REPLACE/bin/g++
+export PKG_CONFIG_LIBDIR=REPLACE/lib/pkgconfig	
+ln -sf $MOUNTNAME REPLACE
+PS1="gnu-sdk > " $SHELL --norc
+

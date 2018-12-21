@@ -1,0 +1,11 @@
+${FETCHCMD} https://ftp.gnu.org/gnu/diffutils/diffutils-3.6.tar.xz
+SRCDIR=diffutils-3.6
+${RMCMD} $SRCDIR
+${TARCMD} -vxf *.tar.xz
+../patcher
+cd $SRCDIR
+${MKDIRCMD} build
+cd build
+../configure --prefix=${FINPREFIX} --host=$MACHARCH --target=$MACHARCH --build=$MACHARCH &&
+${MKCMD} &&
+${MKCMD} install 

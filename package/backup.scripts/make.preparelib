@@ -1,0 +1,62 @@
+#source ./make.config
+
+${RMCMD} tmpdir/tmp.libs* &&
+for libs in ${FINPREFIX}/bin/*; do
+ ldd "$libs" >>tmpdir/tmp.libs 
+done
+for libs in ${FINPREFIX}/sbin/*; do
+ ldd "$libs" >>tmpdir/tmp.libs 
+done
+${CATCMD} tmpdir/tmp.libs | ${GREPCMD} -Po "(?<=>).*(?=\s*\\()" >tmpdir/tmp.libs2 &&
+${SORTCMD} -u tmpdir/tmp.libs2 >tmpdir/tmp.libs3 &&
+${CPCMD} -L $(cat tmpdir/tmp.libs3) ${FINPREFIX}/lib/ &>/dev/null | true &&
+${CPCMD} appimage/run.c tmpdir/run.c &>/dev/null | true &&
+${SEDCMD} -i -e "s:REPLACE:${PKGDEFAULTNAME}:g" tmpdir/run.c
+for bins in ${FINPREFIX}/bin/* ${FINPREFIX}/sbin/*; do
+if [ "$UARCH" == "x64" ]; then
+ if [[ "$MACHARCH" =~ .*gnu ]]; then
+  ./patchelf-${PLATFORM}-x64 --set-interpreter ${FINPREFIX}/lib/ld-linux-x86-64.so.2 "$bins" &>/dev/null
+ elif [[ "$MACHARCH" =~ .*musl ]]; then
+  ./patchelf-${PLATFORM}-x64 --set-interpreter ${FINPREFIX}/lib/ld-musl-x86_64.so.1 "$bins"	&>/dev/null
+ fi
+elif [ "$UARCH" == "arm6" ]; then
+ if [[ "$MACHARCH" =~ .*gnu ]]; then
+  ./patchelf-${PLATFORM}-arm6 --set-interpreter ${FINPREFIX}/lib/ld-linux-armhf.so.3 "$bins" &>/dev/null
+ elif [[ "$MACHARCH" =~ .*musl ]]; then
+  ./patchelf-${PLATFORM}-arm6 --set-interpreter ${FINPREFIX}/lib/ld-musl-armhf.so.1 "$bins" &>/dev/null
+ fi
+elif [ "$UARCH" == "arm7" ]; then
+ if [[ "$MACHARCH" =~ .*gnu ]]; then
+  ./patchelf-${PLATFORM}-arm7 --set-interpreter ${FINPREFIX}/lib/ld-linux-armhf.so.3 "$bins" &>/dev/null
+ elif [[ "$MACHARCH" =~ .*musl ]]; then
+  ./patchelf-${PLATFORM}-arm7 --set-interpreter ${FINPREFIX}/lib/ld-musl-armhf.so.1 "$bins" &>/dev/null
+ fi
+elif [ "$UARCH" == "arm8" ]; then
+ if [[ "$MACHARCH" =~ .*gnu ]]; then
+  ./patchelf-${PLATFORM}-arm8 --set-interpreter ${FINPREFIX}/lib/ld-linux-aarch64.so.1 "$bins" &>/dev/null
+ elif [[ "$MACHARCH" =~ .*musl ]]; then
+  ./patchelf-${PLATFORM}-arm8 --set-interpreter ${FINPREFIX}/lib/ld-musl-aarch64.so.1 "$bins" &>/dev/null
+ fi
+fi
+done
+if [ "$UARCH" == "x64" ] && [ "$PLATFORM" == "linux" ]; then
+  ${CC} -l:${TCDIR}/appimage/dietlibc-x64.a -static tmpdir/run.c -o working.prefix/run &>/dev/null &&
+  ${CC} -l:${TCDIR}/appimage/dietlibc-x64.a -static tmpdir/AppRun.c -o working.prefix/AppRun &>/dev/null
+elif [ "$UARCH" == "arm6" ] && [ "$PLATFORM" == "linux" ]; then
+  ${CC} -l:${TCDIR}/appimage/dietlibc-arm6.a -static tmpdir/run.c -o working.prefix/run &>/dev/null &&
+  ${CC} -l:${TCDIR}/appimage/dietlibc-arm6.a -static tmpdir/AppRun.c -o working.prefix/AppRun &>/dev/null
+elif [ "$UARCH" == "arm7" ] && [ "$PLATFORM" == "linux" ]; then
+  ${CC} -l:${TCDIR}/appimage/dietlibc-arm7.a -static tmpdir/run.c -o working.prefix/run &>/dev/null &&
+  ${CC} -l:${TCDIR}/appimage/dietlibc-arm7.a -static tmpdir/AppRun.c -o working.prefix/AppRun &>/dev/null
+elif [ "$UARCH" == "arm8" ] && [ "$PLATFORM" == "linux" ]; then
+  ${CC} -l:${TCDIR}/appimage/dietlibc-arm8.a -static tmpdir/run.c -o working.prefix/run &>/dev/null &&
+  ${CC} -l:${TCDIR}/appimage/dietlibc-arm8.a -static tmpdir/AppRun.c -o working.prefix/AppRun &>/dev/null
+fi
+
+
+${CPCMD} appimage/template.desktop working.prefix/${PKGDEFAULTNAME}.desktop | true &&
+${TOUCHCMD} working.prefix/null.png &&
+${TOUCHCMD} working.prefix/setup.sh &&
+${CHMODCMD} +x working.prefix/setup.sh &&
+${ECHOCMD} "Package build complete!" &&
+${ECHOCMD} "Please modify the .desktop and setup.sh files in working.prefix/, then run ./make.appimage"

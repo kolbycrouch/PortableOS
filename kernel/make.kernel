@@ -1,0 +1,42 @@
+## Below is the list of user defined variables for the build.
+##
+
+export FINPREFIX=/mnt/xxd8541ss
+export MACHARCH=armv7l-linux-gnueabihf
+
+##
+##
+
+## Below is a list of variables for the tools used to build the toolchain.
+## Strive for best compatibility for alternative tools if possible.
+
+export TARCMD="tar $@" 
+export PATCHCMD="patch $@"
+export MKDIRCMD="mkdir -p $@"
+export FETCHCMD="wget -nc $@"
+export TCDIR="$(pwd)"
+export MKCMD="make -j4 $@"	
+export SEDCMD="sed $@"
+export RMCMD="rm -rf $@"
+export CPCMD="cp -rvf $@"
+export UNZIPCMD="unzip $@"
+
+##
+##
+
+cd linux-odroid &&
+. make.linux-odroid &&
+cd $TCDIR 
+
+## This is the start of the second bootstrap phase for the toolchain.
+## We simply reconfigure some environment variables and rebuild compiler and linker.
+
+export CC=${FINPREFIX}/bin/gcc
+export CXX=${FINPREFIX}/bin/g++
+export LD=${FINPREFIX}/${MACHARCH}/bin/ld
+export CFLAGS="-B ${FINPREFIX}"
+export CXXFLAGS="-B ${FINPREFIX}"
+
+##
+##
+

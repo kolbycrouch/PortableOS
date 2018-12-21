@@ -1,0 +1,30 @@
+PKGNAME=INSERT
+PKGPREFIX=REPLACE
+if test -d "$PKGPREFIX"; then
+	exec $PKGPREFIX/run
+exit 0
+fi
+if test -d "$PKGNAME"; then
+        exec $PKGNAME/run
+exit 0
+fi
+if [ "$1" == "" ]; then
+	mkdir -p $PKGNAME &&
+	sed '0,/^#EOF#$/d' $0 | tar zx -C $PKGNAME &&
+	PKGPATH=$(readlink -f "$PKGNAME")
+	rm -rf $PKGPREFIX 
+	ln -s $PKGPATH $PKGPREFIX
+	exit 0
+elif test -d "$1"; then
+	mkdir -p $1/$PKGNAME &&
+	sed '0,/^#EOF#$/d' $0 | tar zx -C $1/$PKGNAME &&
+	PKGPATH=$(readlink -f "$1"/"$PKGNAME")
+	rm -rf $PKGPREFIX
+	ln -s $PKGPATH $PKGPREFIX
+	exit 0
+else
+	echo "Invalid argument or path doesn't exist." 
+	echo "Please specify a path or run without arguments."
+	exit 0
+fi
+#EOF#

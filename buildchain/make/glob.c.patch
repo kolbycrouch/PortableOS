@@ -1,0 +1,19 @@
+--- make-4.2/glob/glob.c	2013-10-20 12:14:38.000000000 -0500
++++ make-4.2/newglob.c	2018-12-03 12:26:27.595376347 -0600
+@@ -208,8 +208,6 @@
+ #endif /* __GNU_LIBRARY__ || __DJGPP__ */
+ 
+ 
+-#if !defined __alloca && !defined __GNU_LIBRARY__
+-
+ # ifdef	__GNUC__
+ #  undef alloca
+ #  define alloca(n)	__builtin_alloca (n)
+@@ -229,7 +227,6 @@
+ 
+ # define __alloca	alloca
+ 
+-#endif
+ 
+ #ifndef __GNU_LIBRARY__
+ # define __stat stat

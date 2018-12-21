@@ -1,0 +1,60 @@
+--- gcc-8.2.0/gcc/configure	2018-04-18 09:46:58.000000000 +0000
++++ gcc-8.2.0/gcc/configure.new	2018-11-11 15:57:47.961000000 +0000
+@@ -17417,7 +17417,7 @@
+ shlibpath_overrides_runpath=unknown
+ version_type=none
+ dynamic_linker="$host_os ld.so"
+-sys_lib_dlsearch_path_spec="/lib /usr/lib"
++sys_lib_dlsearch_path_spec="REPLACE/lib"
+ need_lib_prefix=unknown
+ hardcode_into_libs=no
+ 
+@@ -17507,8 +17507,8 @@
+   soname_spec='${libname}${release}${shared_ext}$major'
+   finish_cmds='PATH="\$PATH:/sbin" ldconfig $libdir'
+   shlibpath_var=LD_LIBRARY_PATH
+-  sys_lib_search_path_spec="/shlib /usr/lib /usr/X11/lib /usr/contrib/lib /lib /usr/local/lib"
+-  sys_lib_dlsearch_path_spec="/shlib /usr/lib /usr/local/lib"
++  sys_lib_search_path_spec="REPLACE/lib"
++  sys_lib_dlsearch_path_spec="REPLACE/lib"
+   # the default ld.so.conf also contains /usr/contrib/lib and
+   # /usr/X11R6/lib (/usr/X11 is a link to /usr/X11R6), but let us allow
+   # libtool to hard-code these into programs
+@@ -17577,7 +17577,7 @@
+   shrext_cmds='`test .$module = .yes && echo .so || echo .dylib`'
+ 
+   sys_lib_search_path_spec="$sys_lib_search_path_spec /usr/local/lib"
+-  sys_lib_dlsearch_path_spec='/usr/local/lib /lib /usr/lib'
++  sys_lib_dlsearch_path_spec='REPLACE/lib'
+   ;;
+ 
+ dgux*)
+@@ -17811,7 +17811,7 @@
+   # Append ld.so.conf contents to the search path
+   if test -f /etc/ld.so.conf; then
+     lt_ld_extra=`awk '/^include / { system(sprintf("cd /etc; cat %s 2>/dev/null", \$2)); skip = 1; } { if (!skip) print \$0; skip = 0; }' < /etc/ld.so.conf | $SED -e 's/#.*//;/^[	 ]*hwcap[	 ]/d;s/[:,	]/ /g;s/=[^=]*$//;s/=[^= ]* / /g;s/"//g;/^$/d' | tr '\n' ' '`
+-    sys_lib_dlsearch_path_spec="/lib /usr/lib $lt_ld_extra"
++    sys_lib_dlsearch_path_spec="REPLACE/lib $lt_ld_extra"
+   fi
+ 
+   # We used to test for /lib/ld.so.1 and disable shared libraries on
+@@ -21079,7 +21079,7 @@
+ shlibpath_overrides_runpath=unknown
+ version_type=none
+ dynamic_linker="$host_os ld.so"
+-sys_lib_dlsearch_path_spec="/lib /usr/lib"
++sys_lib_dlsearch_path_spec="REPLACE/lib"
+ need_lib_prefix=unknown
+ hardcode_into_libs=no
+ 
+@@ -21169,8 +21169,8 @@
+   soname_spec='${libname}${release}${shared_ext}$major'
+   finish_cmds='PATH="\$PATH:/sbin" ldconfig $libdir'
+   shlibpath_var=LD_LIBRARY_PATH
+-  sys_lib_search_path_spec="/shlib /usr/lib /usr/X11/lib /usr/contrib/lib /lib /usr/local/lib"
+-  sys_lib_dlsearch_path_spec="/shlib /usr/lib /usr/local/lib"
++  sys_lib_search_path_spec="REPLACE/lib"
++  sys_lib_dlsearch_path_spec="REPLACE/lib"
+   # the default ld.so.conf also contains /usr/contrib/lib and
+   # /usr/X11R6/lib (/usr/X11 is a link to /usr/X11R6), but let us allow
+   # libtool to hard-code these into programs

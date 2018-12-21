@@ -1,0 +1,14 @@
+${FETCHCMD} https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.19.2.tar.xz
+SRCDIR=linux-4.19.2
+${RMCMD} $SRCDIR
+${TARCMD} -vxf *.tar.xz
+../patcher
+cd $SRCDIR
+${MKDIRCMD} build
+cd build
+../configure --prefix=${FINPREFIX} --host=$MACHARCH --target=$MACHARCH --build=$MACHARCH \
+	--disable-werror --enable-lto --enable-gold=default \
+	--with-lib-path=${FINPREFIX}/lib &&
+${MKCMD} &&
+${MKCMD} install && 
+${MKCMD} clean

@@ -1,0 +1,13 @@
+${FETCHCMD} https://ftp.gnu.org/gnu/tar/tar-1.30.tar.xz
+SRCDIR=tar-1.30
+${RMCMD} $SRCDIR
+${TARCMD} -vxf *.tar.xz
+../../patcher
+cd $SRCDIR
+${MKDIRCMD} build
+cd build
+FORCE_UNSAFE_CONFIGURE=1 ../configure --prefix=${FINPREFIX} --host=$MACHARCH \
+	 --target=$MACHARCH --build=$MACHARCH &&
+${MKCMD} &&
+${MKCMD} install &&
+${MKCMD} clean

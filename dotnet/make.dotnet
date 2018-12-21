@@ -1,0 +1,6 @@
+for submodule in src/{application-insights,aspnet-razor,cli,cli-migrate,clicommandlineparser,common,core-setup,coreclr,corefx,fsharp,linker,msbuild,newtonsoft-json,nuget-client,roslyn,roslyn-tools,sdk,standard,templating,vstest,websdk,xliff-tasks}; do
+    git submodule init ${submodule}
+    git config submodule.${submodule}.url ../dotnet-${submodule#src/}
+    git submodule update
+done
+

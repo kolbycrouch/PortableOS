@@ -1,0 +1,12 @@
+${FETCHCMD} http://www.libarchive.org/downloads/libarchive-3.3.3.tar.gz
+SRCDIR=libarchive-3.3.3
+${RMCMD} $SRCDIR
+${TARCMD} -vxf *.tar.gz
+../patcher
+cd $SRCDIR
+${MKDIRCMD} build
+cd build
+../configure --prefix=${FINPREFIX} --host=$MACHARCH --target=$MACHARCH \
+	--build=$MACHARCH &&
+${MKCMD} &&
+${MKCMD} install 

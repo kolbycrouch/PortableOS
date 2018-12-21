@@ -1,0 +1,43 @@
+source ./make.config
+## Initial Fetch.
+##
+
+${GITCMD} clone https://github.com/dotnet/source-build dotnet-source-build &&
+${GITCMD} clone https://github.com/Microsoft/ApplicationInsights-dotnet dotnet-application-insights &&
+${GITCMD} clone https://github.com/aspnet/Razor dotnet-aspnet-razor &&
+${GITCMD} clone https://github.com/mono/cecil dotnet-cecil &&
+${GITCMD} clone https://github.com/dotnet/cli dotnet-cli &&
+${GITCMD} clone https://github.com/dotnet/cli-migrate dotnet-cli-migrate &&
+${GITCMD} clone https://github.com/dotnet/clicommandlineparser dotnet-clicommandlineparser &&
+${GITCMD} clone https://github.com/aspnet/common dotnet-common &&
+${GITCMD} clone https://github.com/dotnet/core-setup dotnet-core-setup &&
+${GITCMD} clone https://github.com/dotnet/coreclr dotnet-coreclr &&
+${GITCMD} clone https://github.com/dotnet/corert dotnet-corert &&
+${GITCMD} clone https://github.com/dotnet/corefx dotnet-corefx &&
+${GITCMD} clone https://github.com/Microsoft/VisualFSharp dotnet-fsharp &&
+${GITCMD} clone https://github.com/mono/linker dotnet-linker &&
+${GITCMD} clone https://github.com/Microsoft/msbuild dotnet-msbuild &&
+${GITCMD} clone https://github.com/JamesNK/Newtonsoft.Json dotnet-newtonsoft-json &&
+${GITCMD} clone https://github.com/NuGet/NuGet.Client dotnet-nuget-client &&
+${GITCMD} clone https://github.com/dotnet/roslyn dotnet-roslyn &&
+${GITCMD} clone https://github.com/dotnet/roslyn-tools dotnet-roslyn-tools &&
+${GITCMD} clone https://github.com/dotnet/sdk dotnet-sdk &&
+${GITCMD} clone https://github.com/dotnet/standard dotnet-standard &&
+${GITCMD} clone https://github.com/dotnet/templating dotnet-templating &&
+${GITCMD} clone https://github.com/Microsoft/vstest dotnet-vstest &&
+${GITCMD} clone https://github.com/aspnet/websdk dotnet-websdk &&
+${GITCMD} clone https://github.com/dotnet/xliff-tasks dotnet-xliff-tasks &&
+${FETCHCMD} https://download.visualstudio.microsoft.com/download/pr/69ee3993-54fe-4687-9388-25b1e0c888fb/df2ba0637e68f6e8ee212a38756a4002/aspnetcore-runtime-2.2.0-linux-x64.tar.gz
+
+## Git update.
+##
+ 
+cd dotnet-source-build
+
+for submodule in src/{application-insights,aspnet-razor,cli,cli-migrate,clicommandlineparser,common,core-setup,coreclr,corefx,fsharp,linker,msbuild,newtonsoft-json,nuget-client,roslyn,roslyn-tools,sdk,standard,templating,vstest,websdk,xliff-tasks,corert}; do
+    ${GITCMD} submodule init ${submodule}
+    ${GITCMD} config submodule.${submodule}.url ../dotnet-${submodule#src/}
+    ${GITCMD} submodule update
+done
+
+

@@ -1,0 +1,19 @@
+${MKDIRCMD} tmpdir
+for file in *.run ; do
+	${CPCMD} "$file" tmpdir
+done
+for file in tmpdir/*.run ; do
+	${SEDCMD} -i -e "s:REPLACE:${FINPREFIX}:g" "$file"
+	${SEDCMD} -i -e "s:INSERT:${PKGDEFAULTNAME}:g" "$file"
+done
+REALMOUNTNAME="/tmp/.mount_$PKGDEFAULTNAME"
+${ECHOCMD} ${REALMOUNTNAME} > tmpdir/mountname.tmp &&
+${CPCMD} make.run tmpdir/run &&
+${ECHOCMD} MOUNTPOINT=$($CATCMD tmpdir/mountname.tmp) | ${CATCMD} - tmpdir/run > tmp/tmp.run && 
+#${MVCMD} tmpdir/tmp.run tmpdir/run &&
+${CPCMD} tmpdir/make.run ${FINPREFIX}/run &&
+${TARCMD} -cvf ${PKGDEFAULTNAME}.tar -C ${FINPREFIX} . &&
+${GZCMD} -9 ${PKGDEFAULTNAME}.tar &&
+${CATCMD} tmpdir/selfextract.run ${PKGDEFAULTNAME}.tar.gz > ${PKGDEFAULTNAME} &&
+${CHMODCMD} +x ${PKGDEFAULTNAME} &&
+${RMCMD} tmpdir

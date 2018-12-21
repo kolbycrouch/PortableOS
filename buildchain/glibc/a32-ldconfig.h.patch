@@ -1,0 +1,13 @@
+--- glibc-2.28/sysdeps/unix/sysv/linux/arm/ldconfig.h	2018-08-01 00:10:47.000000000 -0500
++++ glibc-2.28/a32-ldconfig.h	2018-12-03 11:17:58.755291310 -0600
+@@ -18,8 +18,8 @@
+ #include <sysdeps/generic/ldconfig.h>
+ 
+ #define SYSDEP_KNOWN_INTERPRETER_NAMES \
+-  { "/lib/ld-linux.so.3", FLAG_ELF_LIBC6 }, \
+-  { "/lib/ld-linux-armhf.so.3", FLAG_ELF_LIBC6 },
++  { "REPLACE/lib/ld-linux.so.3", FLAG_ELF_LIBC6 }, \
++  { "REPLACE/lib/ld-linux-armhf.so.3", FLAG_ELF_LIBC6 },
+ #define SYSDEP_KNOWN_LIBRARY_NAMES \
+   { "libc.so.6", FLAG_ELF_LIBC6 },	\
+   { "libm.so.6", FLAG_ELF_LIBC6 },

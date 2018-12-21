@@ -1,0 +1,64 @@
+${FETCHCMD} https://ftp.gnu.org/gnu/ncurses/ncurses-6.1.tar.gz
+VERSION=6.1
+SRCDIR=ncurses-6.1
+${RMCMD} $SRCDIR
+${TARCMD} -vxf *.tar.gz
+../patcher
+cd $SRCDIR
+export CFLAGS="-fPIC"
+${MKDIRCMD} wide-build
+${MKDIRCMD} build
+
+## Build wide support first.
+
+cd wide-build
+../configure --prefix=${FINPREFIX} --with-shared --without-debug --without-ada \
+	--without-tests --enable-pc-files --with-pkg-config-libdir=${FINPREFIX}/lib/pkgconfig \
+	--enable-widec --enable-ext-colors --with-manpage-symlinks &&
+${MKCMD} &&
+${MKCMD} install &&
+
+# Make non-wide libraries links to wide ones.
+
+for lib in curses ncurses form panel menu; do
+		${RMCMD} ${WRKPREFIX}/${FINPREFIX}/lib/lib${lib}.so
+		${ECHOCMD} "INPUT(-l${lib}w)" >${WRKPREFIX}/${FINPREFIX}/lib/lib${lib}.so
+		${CHMODCMD} 755 ${WRKPREFIX}/${FINPREFIX}/lib/lib${lib}.so
+		${LNCMD} -sf lib${lib}w.a ${WRKPREFIX}/${FINPREFIX}/lib/lib${lib}.a
+done
+${LNCMD} -sf libncurses++w.a ${WRKPREFIX}/${FINPREFIX}/lib/libncurses++.a
+
+# Some packages need -lcurses.
+
+	${RMCMD} ${WRKPREFIX}/${FINPREFIX}/lib/libcursesw.so
+	${ECHOCMD} "INPUT(-lncursesw)" >${WRKPREFIX}/${FINPREFIX}/lib/libcursesw.so
+	${CHMODCMD} 755 ${WRKPREFIX}/${FINPREFIX}/lib/libcursesw.so
+	${LNCMD} -sf libncurses.so ${WRKPREFIX}/${FINPREFIX}/lib/libcurses.so
+	${LNCMD} -sf libncursesw.a ${WRKPREFIX}/${FINPREFIX}/lib/libcursesw.a
+	${LNCMD} -sf libncurses.a ${WRKPREFIX}/${FINPREFIX}/lib/libcurses.a
+
+# Change back to top directory.
+
+cd ../
+
+# Build normal now.
+
+cd build
+../configure --prefix=${FINPREFIX} --host=$MACHARCH --target=$MACHARCH \
+	--build=$MACHARCH --with-shared --without-debug --without-ada \
+	--without-tests --enable-pc-files --with-pkg-config-libdir=${FINPREFIX}/lib/pkgconfig &&
+${MKCMD} 
+
+# non-wide compat.
+
+install -Dm755 lib/libncurses.so.${VERSION} \
+		${WRKPREFIX}/${FINPREFIX}/lib/libncurses.so.${VERSION}
+
+# Version compat symlinks
+
+for f in ncurses form panel menu; do
+		${LNCMD} -sfr ${WRKPREFIX}/${FINPREFIX}/lib/lib${f}w.so.6 \
+			${WRKPREFIX}/${FINPREFIX}/lib/lib${f}w.so.5
+done
+${LNCMD} -sf ncursesw6-config ${WRKPREFIX}/${FINPREFIX}/bin/ncursesw5-config
+${LNCMD} -sf ncursesw6-config ${WRKPREFIX}/${FINPREFIX}/bin/ncurses5-config
