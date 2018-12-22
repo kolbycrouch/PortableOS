@@ -13,12 +13,17 @@ source ./make.prefix
 
 
 ${MKDIRCMD} tmpdir &&
+export CCPREFIX=$(${WHICHCMD} cc | ${XARGSCMD} ${DIRNAMECMD} | ${XARGSCMD} ${DIRNAMECMD})
+export CC="${CCPREFIX}/bin/cc"
+export CXX="${CCPREFIX}/bin/c++"
+
+
 if [ "$FIRST" == "toolchain" ];then
 	export TOOLCHAINBUILD=1
         cd ./toolchain &&
         ./make.toolchain all &&
 	cd ${TOPDIR} &&
-        ./make.preparelib &&
+        ./make.preparelib 
         exit 0
 fi
 cd tmpdir &&
@@ -40,7 +45,6 @@ fi
 cd ${TOPDIR} &&
 
 cd ./tmpdir 
-export CCPREFIX=$(${WHICHCMD} cc | ${XARGSCMD} ${DIRNAMECMD} | ${XARGSCMD} ${DIRNAMECMD})
 ${MKDIRCMD} ${FINPREFIX}/sbin
 if [[ "$MACHARCH" =~ .*gnu ]]; then
  ${CPCMD} -L ${CCPREFIX}/lib/ld-linux* ${FINPREFIX}/sbin/rtld
@@ -49,8 +53,6 @@ elif [[ "$MACHARCH" =~ .*musl ]]; then
 fi
 
 cd pkgsrc/bootstrap &&
-export CC="${CCPREFIX}/bin/cc"
-export CXX="${CCPREFIX}/bin/c++"
 export CFLAGS="-Wl,--dynamic-linker=${FINPREFIX}/sbin/rtld"
 export CXXFLAGS="-Wl,--dynamic-linker=${FINPREFIX}/sbin/rtld"
 export LDFLAGS="-Wl,--dynamic-linker=${FINPREFIX}/sbin/rtld"

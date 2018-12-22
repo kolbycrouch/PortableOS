@@ -25,8 +25,8 @@ ${SEDCMD} -i -e "s:REPLACE:${PKGDEFAULTNAME}:g" tmpdir/run.c &&
 
 cd appimage/dietlibc
 ./make.dietlibc &&
-./dietlibc-*/bin-*/diet ${CC} -s -static ${TOPDIR}/tmpdir/run.c -o ${TOPDIR}/working.prefix/run &>/dev/null &&
-./dietlibc-*/bin-*/diet ${CC} -s -static ${TOPDIR}/tmpdir/AppRun.c -o ${TOPDIR}/working.prefix/AppRun -lcompat &>/dev/null && 
+${TOPDIR}/tmpdir/dietlibc-*/dietlibc-*/bin-*/diet ${CC} -s -static ${TOPDIR}/tmpdir/run.c -o ${TOPDIR}/working.prefix/run &&
+${TOPDIR}/tmpdir/dietlibc-*/dietlibc-*/bin-*/diet ${CC} -s -static ${TOPDIR}/tmpdir/AppRun.c -o ${TOPDIR}/working.prefix/AppRun -lcompat && 
 cd ${TOPDIR}
 
 ## Strip binaries and shared libraries in the AppImage.
@@ -39,6 +39,7 @@ ${STRIPCMD} -s ./lib/* &>/dev/null | true &&
 
 ## Remove useless stuff.
 ##
+
 if [ -n "$TOOLCHAINBUILD" ]; then
 	:
 else
