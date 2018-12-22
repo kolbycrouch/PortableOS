@@ -1,0 +1,20 @@
+${FETCHCMD} https://ftp.gnu.org/gnu/binutils/binutils-2.31.tar.xz
+export SRCDIR=binutils-2.31
+${RMCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${MKDIRCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${TARCMD} -vxf ${TOPDIR}/sources/${SRCDIR}.tar.* -C ${TOPDIR}/tmpdir/${SRCDIR}/ 
+../patcher
+cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
+${MKDIRCMD} build
+cd build
+CFLAGS+="-B${FINPREFIX}"
+CXXFLAGS+="-B${FINPREFIX}"
+if [[ "$MACHARCH" =~ .*musl ]]
+then
+        ARCHCONFIG="$ARCHCONFIG --disable-symvers"
+fi
+../configure $ARCHCONFIG --prefix=${FINPREFIX} --host=$HOSTARCH --target=$MACHARCH  \
+	--disable-werror --enable-lto --enable-gold=default \
+	--with-lib-path=${FINPREFIX}/lib &&
+${MKCMD} &&
+${MKCMD} install 

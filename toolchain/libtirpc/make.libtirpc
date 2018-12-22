@@ -1,0 +1,12 @@
+${FETCHCMD} https://downloads.sourceforge.net/libtirpc/libtirpc-1.0.3.tar.bz2
+export SRCDIR=libtirpc-1.0.3
+${RMCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${MKDIRCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${TARCMD} -vxf ${TOPDIR}/sources/${SRCDIR}.tar.* -C ${TOPDIR}/tmpdir/${SRCDIR}/
+../patcher
+cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
+${MKDIRCMD} build
+cd build
+../configure --prefix=${FINPREFIX} --disable-gssapi &&
+${MKCMD} &&
+${MKCMD} install 

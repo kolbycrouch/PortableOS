@@ -1,0 +1,13 @@
+${FETCHCMD} http://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-2.8.2.tar.gz
+export SRCDIR=libressl-2.8.2
+${RMCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${MKDIRCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${TARCMD} -vxf ${TOPDIR}/sources/${SRCDIR}.tar.* -C ${TOPDIR}/tmpdir/${SRCDIR}/
+../patcher
+cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
+${MKDIRCMD} build
+cd build
+../configure --prefix=${FINPREFIX} --host=$MACHARCH --target=$MACHARCH \
+	--build=$MACHARCH --disable-hardening &&
+${MKCMD} &&
+${MKCMD} install

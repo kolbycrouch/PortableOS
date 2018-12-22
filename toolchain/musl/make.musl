@@ -1,0 +1,12 @@
+${FETCHCMD} https://www.musl-libc.org/releases/musl-1.1.20.tar.gz
+export SRCDIR=musl-1.1.20
+${RMCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${MKDIRCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${TARCMD} -vxf ${TOPDIR}/sources/${SRCDIR}.tar.* -C ${TOPDIR}/tmpdir/${SRCDIR}/
+../patcher
+cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
+${MKDIRCMD} build
+cd build
+../configure --syslibdir=${FINPREFIX}/lib --prefix=${FINPREFIX} --exec-prefix=${FINPREFIX} &&
+${MKCMD} &&
+${MKCMD} install 

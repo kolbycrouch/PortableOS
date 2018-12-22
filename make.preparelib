@@ -1,0 +1,58 @@
+## Copy all libraries needed by all binaries into the AppImage.
+##
+
+${RMCMD} tmpdir/tmp.libs* &&
+for libs in ${FINPREFIX}/bin/*; do
+ ldd "$libs" >>tmpdir/tmp.libs 
+done
+for libs in ${FINPREFIX}/sbin/*; do
+ ldd "$libs" >>tmpdir/tmp.libs 
+done
+${CATCMD} tmpdir/tmp.libs | ${GREPCMD} -Po "(?<=>).*(?=\s*\\()" >tmpdir/tmp.libs2 &&
+${SORTCMD} -u tmpdir/tmp.libs2 >tmpdir/tmp.libs3 &&
+${MKDIRCMD} ${FINPREFIX}/lib &&
+${CPCMD} -L $(cat tmpdir/tmp.libs3) ${FINPREFIX}/lib/ &>/dev/null | true &&
+
+## Setup AppImage programs in AppImage directory.
+##
+
+${CPCMD} appimage/run.c tmpdir/run.c &>/dev/null | true &&
+${CPCMD} appimage/AppRun.c tmpdir/AppRun.c &>/dev/null | true &&
+${SEDCMD} -i -e "s:REPLACE:${PKGDEFAULTNAME}:g" tmpdir/run.c &&
+
+## Build dietlibc and use it to link two small c programs for the AppImage.
+##
+
+cd appimage/dietlibc
+./make.dietlibc &&
+./dietlibc-*/bin-*/diet ${CC} -s -static ${TOPDIR}/tmpdir/run.c -o ${TOPDIR}/working.prefix/run &>/dev/null &&
+./dietlibc-*/bin-*/diet ${CC} -s -static ${TOPDIR}/tmpdir/AppRun.c -o ${TOPDIR}/working.prefix/AppRun -lcompat &>/dev/null && 
+cd ${TOPDIR}
+
+## Strip binaries and shared libraries in the AppImage.
+##
+
+cd working.prefix &&
+${STRIPCMD} -s ./bin/* &>/dev/null | true &&
+${STRIPCMD} -s ./sbin/* &>/dev/null | true &&
+${STRIPCMD} -s ./lib/* &>/dev/null | true &&
+
+## Remove useless stuff.
+##
+if [ -n "$TOOLCHAINBUILD" ]; then
+	:
+else
+	${RMCMD} $(${CATCMD} ../prune/*) &>/dev/null | true
+fi
+cd ${TOPDIR}
+
+## Copy AppImage template files to the AppImage directory and finish the build.
+##
+
+${CPCMD} appimage/template.desktop working.prefix/${PKGDEFAULTNAME}.desktop | true &&
+${TOUCHCMD} working.prefix/null.png &&
+${TOUCHCMD} working.prefix/setup.sh &&
+${CHMODCMD} +x working.prefix/setup.sh &&
+${RMCMD} log.prefix tmpdir &&
+${ECHOCMD} "Package build complete!" &&
+${ECHOCMD} "Please modify the .desktop and setup.sh files in working.prefix/, then run ./make.appimage"

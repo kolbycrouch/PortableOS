@@ -1,0 +1,26 @@
+${FETCHCMD} https://ftp.gnu.org/gnu/glibc/glibc-2.28.tar.xz
+export SRCDIR=glibc-2.28
+${RMCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${MKDIRCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${TARCMD} -vxf ${TOPDIR}/sources/${SRCDIR}.tar.* -C ${TOPDIR}/tmpdir/${SRCDIR}/
+../patcher
+cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
+${MKDIRCMD} build
+cd build
+if [ $SUBARCH = "armv6" ]
+then
+	ARCHCONFIG="--with-march=armv6 --with-fpu=vfp --with-float=hard"
+fi
+FORCE_UNSAFE_CONFIGURE=1 ../configure CFLAGS="-O2 -U_FORTIFY_SOURCE" \
+	 ${ARCHCONFIG} --prefix=${FINPREFIX} \
+	 --host=${MACHARCH} --target=${MACHARCH} --build=${MACHARCH} \
+	 --disable-werror --with-lib-path=${FINPREFIX}/lib --disable-profile \
+	 --enable-kernel=3.2.0 --enable-bind-now --enable-add-ons=libidn \
+	 --without-selinux --without-cvs --without-gd --disable-lock-elision \
+	 --enable-obsolete-nsl --enable-obsolete-rpc --includedir=${FINPREFIX}/.tmpglibcinc
+${MKDIRCMD} ${FINPREFIX}/include &&
+${MKCMD} &&
+${MKCMD} install &&
+${CPCMD} ${FINPREFIX}/.tmpglibcinc/* ${FINPREFIX}/include/ &&
+${RMCMD} ${FINPREFIX}/.tmpglibcinc/ 
+

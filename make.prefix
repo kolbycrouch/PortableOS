@@ -1,5 +1,4 @@
-export MKTEMPCMD="mktemp $@"
-TMPDIR=/tmp $MKTEMPCMD -d --suffix=-$PKGDEFAULTNAME -t .pkg-XXXXXXXX >log.prefix &&
+TMPDIR=/tmp $MKTEMPCMD -d -t .pkg-${PKGDEFAULTNAME}XXXXXX >log.prefix &&
 export FINPREFIX=$(cat log.prefix) &&
 ${RMCMD} working.prefix &&
 ${MKDIRCMD} working.prefix &&

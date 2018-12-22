@@ -1,0 +1,9 @@
+${FETCHCMD} https://sourceforge.net/projects/bzip2/files/latest/download
+export SRCDIR=bzip2-1.0.6
+${RMCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${MKDIRCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${TARCMD} -vxf ${TOPDIR}/sources/download -C ${TOPDIR}/tmpdir/${SRCDIR}/
+../patcher
+cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
+CFLAGS="-fPIC" ${MKCMD} &&
+${MKCMD} install 

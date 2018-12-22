@@ -1,0 +1,12 @@
+${FETCHCMD} https://zlib.net/zlib-1.2.11.tar.xz
+export SRCDIR=zlib-1.2.11
+${RMCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${MKDIRCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${TARCMD} -vxf ${TOPDIR}/sources/${SRCDIR}.tar.* -C ${TOPDIR}/tmpdir/${SRCDIR}/
+../patcher
+cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
+${MKDIRCMD} build
+cd build
+../configure --prefix=${FINPREFIX}  &&
+${MKCMD} &&
+${MKCMD} install

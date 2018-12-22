@@ -1,0 +1,41 @@
+${FETCHCMD} https://ftp.gnu.org/gnu/gcc/gcc-8.2.0/gcc-8.2.0.tar.xz
+export SRCDIR=gcc-8.2.0
+${RMCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${MKDIRCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${TARCMD} -vxf ${TOPDIR}/sources/${SRCDIR}.tar.* -C ${TOPDIR}/tmpdir/${SRCDIR}/
+../patcher
+cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
+${MKDIRCMD} build
+cd build
+CFLAGS="-O2 -pipe -B${FINPREFIX}"
+CXXFLAGS="-O2 -pipe -B${FINPREFIX}"
+if [[ "$MACHARCH" =~ .*musl ]]
+then
+	ARCHCONFIG="$ARCHCONFIG --disable-symvers"
+fi
+if [ $UARCH == "arm" ]
+then 
+	ARCHCONFIG="$ARCHCONFIG --with-arch=armv7-a --with-fpu=vfpv3 --with-float=hard"
+fi
+${SEDCMD} -i "/ac_cpp=/s/\$CPPFLAGS/\$CPPFLAGS -O2/" {gcc,libiberty}/configure
+export CFLAGS="${CFLAGS/-D_FORTIFY_SOURCE=2/}"
+export CXXFLAGS="${CXXFLAGS/-D_FORTIFY_SOURCE=2/}"
+export CFLAGS="${CFLAGS//-fno-PIE/}"
+export CXXFLAGS="${CXXFLAGS//-fno-PIE/}"
+export LDFLAGS="${LDFLAGS//-no-pie/}"
+../configure ${ARCHCONFIG} --disable-multilib --enable-languages=c,c++,lto,fortran --build=${MACHARCH}  \
+	--prefix=${FINPREFIX} --host=${HOSTARCH} --target=${MACHARCH} \
+	--disable-libsanitizer --disable-werror --enable-lto --enable-plugins --enable-bootstrap \
+	--disable-target-libiberty --disable-libunwind-exceptions --disable-default-pie \
+	--disable-nls --enable-__cxa_atext --enable-threads=posix --libdir=${FINPREFIX}/lib \
+	--libexecdir=${FINPREFIX}/lib libat_cv_have_ifunc=no --enable-libstdcxx \
+	--with-linker-hash-style=gnu --enable-linker-build-id --enable-shared  --disable-libstdcxx-pch &&
+
+${MKCMD} &&
+${MKCMD} install &&
+
+
+## link gcc binary to ${FINPREFIX}/bin/cc
+
+${LNCMD} -sfr ${FINPREFIX}/bin/gcc ${FINPREFIX}/bin/cc
+

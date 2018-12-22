@@ -1,0 +1,12 @@
+${FETCHCMD} https://ftp.gnu.org/gnu/mpfr/mpfr-4.0.1.tar.xz
+export SRCDIR=mpfr-4.0.1
+${RMCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${MKDIRCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${TARCMD} -vxf ${TOPDIR}/sources/${SRCDIR}.tar.* -C ${TOPDIR}/tmpdir/${SRCDIR}/
+../patcher
+cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
+${MKDIRCMD} build
+cd build
+../configure --prefix=${FINPREFIX} --host=$HOSTARCH --target=$MACHARCH &&
+${MKCMD} &&
+${MKCMD} install

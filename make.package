@@ -1,0 +1,75 @@
+set -e 
+set -o pipefail
+export TOPDIR=$(pwd)
+
+FIRST="$1"
+SECND="$2"
+
+shift
+shift
+source ./make.config
+export PKGDEFAULTNAME=$SECND
+source ./make.prefix
+
+
+${MKDIRCMD} tmpdir &&
+if [ "$FIRST" == "toolchain" ];then
+	export TOOLCHAINBUILD=1
+        cd ./toolchain &&
+        ./make.toolchain all &&
+	cd ${TOPDIR} &&
+        ./make.preparelib &&
+        exit 0
+fi
+cd tmpdir &&
+${FETCHCMD} https://ftp.netbsd.org/pub/pkgsrc/current/pkgsrc.tar.xz &&
+${TARCMD} xf pkgsrc.tar.xz --skip-old-files &&
+
+if ${FINDCMD} $FIRST &>/dev/null; then
+	:
+else
+	${ECHOCMD} "Package not found. Try using ls and grep to find a package"
+	exit 0
+fi
+if [ "$FIRST" == "" ] || [ "$SECND" == "" ]; then
+	${ECHOCMD} "Usage: ./make.package category/package customname"
+	exit 0
+fi
+
+
+cd ${TOPDIR} &&
+
+cd ./tmpdir 
+export CCPREFIX=$(${WHICHCMD} cc | ${XARGSCMD} ${DIRNAMECMD} | ${XARGSCMD} ${DIRNAMECMD})
+${MKDIRCMD} ${FINPREFIX}/sbin
+if [[ "$MACHARCH" =~ .*gnu ]]; then
+ ${CPCMD} -L ${CCPREFIX}/lib/ld-linux* ${FINPREFIX}/sbin/rtld
+elif [[ "$MACHARCH" =~ .*musl ]]; then
+ ${CPCMD} -L ${CCPREFIX}/lib/ld-musl-* ${FINPREFIX}/sbin/rtld
+fi
+
+cd pkgsrc/bootstrap &&
+export CC="${CCPREFIX}/bin/cc"
+export CXX="${CCPREFIX}/bin/c++"
+export CFLAGS="-Wl,--dynamic-linker=${FINPREFIX}/sbin/rtld"
+export CXXFLAGS="-Wl,--dynamic-linker=${FINPREFIX}/sbin/rtld"
+export LDFLAGS="-Wl,--dynamic-linker=${FINPREFIX}/sbin/rtld"
+
+if [ -f /bin/mksh ]; then
+	export SH=/bin/mksh
+else
+	export SH=/.sys/sh
+fi
+${RMCMD} work &&
+./bootstrap --prefix=$FINPREFIX --varbase=$FINPREFIX/var --pkgdbdir=$FINPREFIX/pkgsrcdb &&
+${SEDCMD} -i '/.endif/iX11_TYPE= modular' ${FINPREFIX}/etc/mk.conf &&
+${SEDCMD} -i "/.endif/iMAKE_JOBS= $JOBS" ${FINPREFIX}/etc/mk.conf &&
+${SEDCMD} -i "/.endif/iCXXFLAGS+= -Wl,--dynamic-linker=${FINPREFIX}/sbin/rtld" ${FINPREFIX}/etc/mk.conf &&
+
+cd ../
+cd ${FIRST} &&
+${FINPREFIX}/bin/bmake install clean clean-depends &&
+cd ${TOPDIR} &&
+${ECHOCMD} "DONE!"
+./make.preparelib
+

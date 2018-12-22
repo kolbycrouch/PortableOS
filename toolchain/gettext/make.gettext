@@ -1,0 +1,12 @@
+${FETCHCMD} https://ftp.gnu.org/gnu/gettext/gettext-0.19.8.1.tar.xz
+export SRCDIR=gettext-0.19.8.1
+${RMCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${MKDIRCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${TARCMD} -vxf ${TOPDIR}/sources/${SRCDIR}.tar.* -C ${TOPDIR}/tmpdir/${SRCDIR}/
+../patcher
+cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
+${MKDIRCMD} build
+cd build
+EMACS=no ../configure --prefix=${FINPREFIX}  &&
+${MKCMD} &&
+${MKCMD} install

@@ -1,0 +1,11 @@
+${FETCHCMD} https://github.com/thkukuk/libnsl/archive/v1.2.0/libnsl-1.2.0.tar.gz
+export SRCDIR=libnsl-1.2.0
+${RMCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${MKDIRCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${TARCMD} -vxf ${TOPDIR}/sources/${SRCDIR}.tar.* -C ${TOPDIR}/tmpdir/${SRCDIR}/
+../patcher
+cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
+autoreconf -fi &&
+./configure --prefix=${FINPREFIX}  &&
+${MKCMD} &&
+${MKCMD} install
