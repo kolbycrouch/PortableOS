@@ -1,6 +1,8 @@
-#${FETCHCMD} https://www.fefe.de/dietlibc/dietlibc-0.34.tar.xz &&
-SRCDIR=dietlibc-0.34
-#${RMCMD} $SRCDIR &&
-#${TARCMD} -vxf *.tar.xz &&
-cd $SRCDIR 
-#${MKCMD} 
+${FETCHCMD} https://www.fefe.de/dietlibc/dietlibc-0.34.tar.xz &&
+export SRCDIR=dietlibc-0.34
+${RMCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${MKDIRCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${TARCMD} -vxf ${TOPDIR}/sources/${SRCDIR}.tar.* -C ${TOPDIR}/tmpdir/${SRCDIR}/
+../patcher
+cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
+${MKCMD} 
