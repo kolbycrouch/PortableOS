@@ -22,6 +22,7 @@ export PKGDEFAULTNAME=$SECND
 source ./make.prefix
 
 
+${MKDIRCMD} sources &&
 ${MKDIRCMD} tmpdir &&
 export CCPREFIX=$(${WHICHCMD} cc | ${XARGSCMD} ${DIRNAMECMD} | ${XARGSCMD} ${DIRNAMECMD})
 export CC="${CCPREFIX}/bin/cc"
