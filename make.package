@@ -5,8 +5,7 @@ export TOPDIR=$(pwd)
 FIRST="$1"
 SECND="$2"
 
-shift
-shift
+shift $#
 source ./make.config
 export PKGDEFAULTNAME=$SECND
 source ./make.prefix
@@ -17,8 +16,18 @@ export CCPREFIX=$(${WHICHCMD} cc | ${XARGSCMD} ${DIRNAMECMD} | ${XARGSCMD} ${DIR
 export CC="${CCPREFIX}/bin/cc"
 export CXX="${CCPREFIX}/bin/c++"
 
+if [ "$FIRST" == "help" ] || [ "$FIRST" == "--help" ] || [ "$FIRST" == "-h" ] || [ -z "$FIRST" ] || [ -z "$SECND" ]; then
+	${ECHOCMD} ""
+        ${ECHOCMD} "	make.package builds either a toolchain or a pkgsrc package" &&
+	${ECHOCMD} "	for a toolchain the first argument is simply "toolchain" for a pkgsrc package its "category/package"" &&
+	${ECHOCMD} "	Usage: ./make.package category/package customname" &&
+        ${ECHOCMD} "	Usage: ./make.package toolchain customname"
+	${ECHOCMD} ""
+	exit 0
+fi
 
-if [ "$FIRST" == "toolchain" ];then
+
+if [ "$FIRST" == "toolchain" ]; then
 	export TOOLCHAINBUILD=1
         cd ./toolchain &&
         ./make.toolchain all &&
@@ -34,10 +43,6 @@ if ${FINDCMD} $FIRST &>/dev/null; then
 	:
 else
 	${ECHOCMD} "Package not found. Try using ls and grep to find a package"
-	exit 0
-fi
-if [ "$FIRST" == "" ] || [ "$SECND" == "" ]; then
-	${ECHOCMD} "Usage: ./make.package category/package customname"
 	exit 0
 fi
 
