@@ -39,6 +39,10 @@ cd working.prefix &&
 ${STRIPCMD} -s ./bin/* &>/dev/null | true &&
 ${STRIPCMD} -s ./sbin/* &>/dev/null | true &&
 ${STRIPCMD} -s ./lib/lib*.so* &>/dev/null | true &&
+${STRIPCMD} -s ./lib/*/lib*.so* &>/dev/null | true &&
+${STRIPCMD} -s ./lib/*/*/lib*.so* &>/dev/null | true &&
+${STRIPCMD} -s ./lib/*/*/*/lib*.so* &>/dev/null | true &&
+${STRIPCMD} -s ./lib/*/*/*/*/lib*.so* &>/dev/null | true &&
 
 ## Remove useless stuff.
 ##
