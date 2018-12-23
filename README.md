@@ -39,7 +39,7 @@ requiring per-package intervention from the package creator in most cases.
 
 # How to use it?
 
-Run make.package --help for details.
+Edit make.config to match your settings then run make.package --help for details.
 
 
 
