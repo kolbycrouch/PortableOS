@@ -19,7 +19,7 @@ export CXX="${CCPREFIX}/bin/c++"
 if [ "$FIRST" == "help" ] || [ "$FIRST" == "--help" ] || [ "$FIRST" == "-h" ] || [ -z "$FIRST" ] || [ -z "$SECND" ]; then
 	${ECHOCMD} ""
         ${ECHOCMD} "	make.package builds either a toolchain or a pkgsrc package" &&
-	${ECHOCMD} "	for a toolchain the first argument is simply "toolchain" for a pkgsrc package its "category/package"" &&
+	${ECHOCMD} "	for a toolchain the first argument is simply 'toolchain' for a pkgsrc package its 'category/package'" &&
 	${ECHOCMD} "	Usage: ./make.package category/package customname" &&
         ${ECHOCMD} "	Usage: ./make.package toolchain customname"
 	${ECHOCMD} ""
