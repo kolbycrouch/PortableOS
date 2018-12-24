@@ -24,7 +24,7 @@ export CFLAGS="${CFLAGS//-fno-PIE/}"
 export CXXFLAGS="${CXXFLAGS//-fno-PIE/}"
 export LDFLAGS="${LDFLAGS//-no-pie/}"
 ../configure ${ARCHCONFIG} --disable-multilib --enable-languages=c,c++,lto,fortran --build=${MACHARCH}  \
-	--prefix=${FINPREFIX} --host=${HOSTARCH} --target=${MACHARCH} \
+	--prefix=${FINPREFIX} --enable-fast-character \
 	--disable-libsanitizer --disable-werror --enable-lto --enable-plugins --enable-bootstrap \
 	--disable-target-libiberty --disable-libunwind-exceptions --disable-default-pie \
 	--disable-nls --enable-__cxa_atext --enable-threads=posix --libdir=${FINPREFIX}/lib \
