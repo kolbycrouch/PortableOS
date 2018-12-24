@@ -68,7 +68,11 @@ elif [ "$1" == "-a" ] || [ "$1" == "--all" ] || [ "$1" == "all" ]; then
 	build-gcc &&
 	unset CFLAGS
 	unset CXXFLAGS
-	build-glibc &&
+        if [[ "$MACHARCH" =~ .*gnu ]]; then
+                build-glibc
+        else 
+                build-musl
+        fi
 	build-libressl &&
 	build-binutils &&
 	build-gettext &&
