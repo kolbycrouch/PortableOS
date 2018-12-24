@@ -11,7 +11,7 @@ CFLAGS+="-B${FINPREFIX}"
 CXXFLAGS+="-B${FINPREFIX}"
 if [[ "$MACHARCH" =~ .*musl ]]; then
         ARCHCONFIG="$ARCHCONFIG --disable-symvers --enable-ld=default"
-elseif [[ "$MACHARCH" =~ .*gnu ]]; then
+elif [[ "$MACHARCH" =~ .*gnu ]]; then
 	ARCHCONFIG="$ARCHCONFIG --enable-gold=default"
 fi
 ../configure $ARCHCONFIG --prefix=${FINPREFIX} --build=${MACHARCH}  \
