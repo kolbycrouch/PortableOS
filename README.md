@@ -32,8 +32,8 @@ requiring per-package intervention from the package creator in most cases.
 # Caveats.
 
 - Building an application and ALL of it's dependencies is obviously slow.
-- Pkgsrc currently has no way of seperating build-time and run-time dependencies or -dev packages, resulting in a larger prefix
-- Currently we have automated pruning of some basic things, but manual intervention is required to slim the package down to the minimum.
+- Pkgsrc doesn't currently support removing build-time dependencies without pkgin or -dev packages, resulting in a larger prefix
+- Currently we have automated pruning of some basic things, but manual intervention is often required to slim the package down to the minimum.
 
 
 
