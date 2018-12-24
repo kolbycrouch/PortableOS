@@ -9,12 +9,13 @@ ${MKDIRCMD} build
 cd build
 CFLAGS+="-B${FINPREFIX}"
 CXXFLAGS+="-B${FINPREFIX}"
-if [[ "$MACHARCH" =~ .*musl ]]
-then
-        ARCHCONFIG="$ARCHCONFIG --disable-symvers"
+if [[ "$MACHARCH" =~ .*musl ]]; then
+        ARCHCONFIG="$ARCHCONFIG --disable-symvers --enable-ld=default"
+elseif [[ "$MACHARCH" =~ .*gnu ]]; then
+	ARCHCONFIG="$ARCHCONFIG --enable-gold=default"
 fi
-../configure $ARCHCONFIG --prefix=${FINPREFIX} --host=$HOSTARCH --target=$MACHARCH  \
-	--disable-werror --enable-lto --enable-gold=default \
-	--with-lib-path=${FINPREFIX}/lib &&
+../configure $ARCHCONFIG --prefix=${FINPREFIX} --build=${MACHARCH}  \
+	--disable-werror --enable-lto --disable-nls \
+	--with-lib-path=${FINPREFIX}/lib --with-mmap && 
 ${MKCMD} &&
 ${MKCMD} install 
