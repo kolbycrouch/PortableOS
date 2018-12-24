@@ -38,9 +38,9 @@ if [ "$FIRST" == "toolchain" ]; then
 fi
 cd tmpdir &&
 ${FETCHCMD} https://ftp.netbsd.org/pub/pkgsrc/current/pkgsrc.tar.xz &&
-${TARCMD} xf pkgsrc.tar.xz --skip-old-files &&
+${TARCMD} xf ${TOPDIR}/sources/pkgsrc.tar.xz --skip-old-files &&
 
-if ${FINDCMD} $FIRST &>/dev/null; then
+if ${FINDCMD} pkgsrc/$FIRST &>/dev/null; then
 	:
 else
 	${ECHOCMD} "Package not found. Try using ls and grep to find a package"
@@ -48,9 +48,6 @@ else
 fi
 
 
-cd ${TOPDIR} &&
-
-cd ./tmpdir 
 ${MKDIRCMD} ${FINPREFIX}/sbin
 if [[ "$MACHARCH" =~ .*gnu ]]; then
  ${CPCMD} -L ${CCPREFIX}/lib/ld-linux* ${FINPREFIX}/sbin/rtld
