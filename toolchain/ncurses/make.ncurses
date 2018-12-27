@@ -63,4 +63,4 @@ for f in ncurses form panel menu; do
 done
 ${LNCMD} -sf ncursesw6-config ${WRKPREFIX}/${FINPREFIX}/bin/ncursesw5-config &&
 ${LNCMD} -sf ncursesw6-config ${WRKPREFIX}/${FINPREFIX}/bin/ncurses5-config &&
-${MVCMD} ${TOPDIR}/working.prefix/include/ncursesw/* ${TOPDIR}/working.prefix/include/
+${CPCMD} ${TOPDIR}/working.prefix/include/ncursesw/* ${TOPDIR}/working.prefix/include/
