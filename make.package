@@ -31,7 +31,7 @@ export CXX="${CCPREFIX}/bin/c++"
 if [ "$FIRST" == "toolchain" ]; then
 	export TOOLCHAINBUILD=1
         cd ./toolchain &&
-        ./make.toolchain all &&
+        source ./make.toolchain all &&
 	cd ${TOPDIR} &&
         ./make.preparelib 
         exit 0
