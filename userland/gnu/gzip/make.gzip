@@ -1,9 +1,10 @@
-${FETCHCMD} https://ftp.gnu.org/gnu/gzip/gzip-1.9.tar.xz
-SRCDIR=gzip-1.9
-${RMCMD} $SRCDIR
-${TARCMD} -vxf *.tar.xz
-../../patcher
-cd $SRCDIR
+${FETCHCMD} https://ftp.gnu.org/gnu/gzip/gzip-1.10.tar.xz
+export SRCDIR=gzip-1.10
+${RMCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${MKDIRCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${TARCMD} -vxf ${TOPDIR}/sources/${SRCDIR}.tar.* -C ${TOPDIR}/tmpdir/${SRCDIR}/
+../patcher
+cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
 ${MKDIRCMD} build
 cd build
 FORCE_UNSAFE_CONFIGURE=1 ../configure --prefix=${FINPREFIX} --host=$MACHARCH \
