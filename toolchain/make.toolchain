@@ -84,7 +84,6 @@ elif [ "$1" == "-a" ] || [ "$1" == "--all" ] || [ "$1" == "all" ]; then
 	build-bzip &&
 	build-libarchive &&
 	echo "Build Successful!"
-	exit 0
 elif [ "$1" == "kernel-headers" ]; then
 	shift
 	source make.config
