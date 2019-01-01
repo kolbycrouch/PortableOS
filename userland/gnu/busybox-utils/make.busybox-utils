@@ -1,0 +1,11 @@
+${FETCHCMD} https://busybox.net/downloads/busybox-1.30.0.tar.bz2
+export SRCDIR=busybox-1.30.0
+${RMCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${MKDIRCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${TARCMD} -vxf ${TOPDIR}/sources/${SRCDIR}.tar.* -C ${TOPDIR}/tmpdir/${SRCDIR}/
+../patcher
+${CPCMD} utils.config ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}/.config
+cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
+${MKCMD} &&
+${MKCMD} install &&
+${CPCMD} ./_install/* ${FINPREFIX}/

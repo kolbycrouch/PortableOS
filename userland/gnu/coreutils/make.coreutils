@@ -7,7 +7,7 @@ ${TARCMD} -vxf ${TOPDIR}/sources/${SRCDIR}.tar.* -C ${TOPDIR}/tmpdir/${SRCDIR}/
 cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
 ${MKDIRCMD} build
 cd build
-FORCE_UNSAFE_CONFIGURE=1 ../configure --prefix=${FINPREFIX} --host=$MACHARCH \
+LDFLAGS="-static" FORCE_UNSAFE_CONFIGURE=1 ../configure --prefix=${FINPREFIX} --host=$MACHARCH \
 	 --target=$MACHARCH --build=$MACHARCH &&
 ${MKCMD} &&
 ${MKCMD} install 

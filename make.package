@@ -19,8 +19,8 @@ if [ "$FIRST" == "help" ] || [ "$FIRST" == "--help" ] || [ "$FIRST" == "-h" ] ||
 fi
 
 export PKGDEFAULTNAME=$SECND
-source ./make.prefix
 
+source ./make.prefix
 
 ${MKDIRCMD} sources &&
 ${MKDIRCMD} tmpdir &&
@@ -36,6 +36,16 @@ if [ "$FIRST" == "toolchain" ]; then
         ./make.preparelib 
         exit 0
 fi
+
+if [ "$FIRST" == "userland" ]; then
+	export USERLANDBUILD=1
+	cd ./userland &&
+	source ./make.userland &&
+	cd ${TOPDIR} &&
+	./make.preparelib
+	exit 0
+fi
+
 cd tmpdir &&
 ${FETCHCMD} https://ftp.netbsd.org/pub/pkgsrc/current/pkgsrc.tar.xz &&
 ${TARCMD} xf ${TOPDIR}/sources/pkgsrc.tar.xz --skip-old-files &&

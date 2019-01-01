@@ -14,6 +14,7 @@ build-sed () { cd sed && . make.sed && cd $TOPDIR/userland/gnu; }
 build-tar () { cd tar && . make.tar && cd $TOPDIR/userland/gnu; }
 build-util-linux () { cd util-linux && . make.util-linux && cd $TOPDIR/userland/gnu; }
 build-xzutils () { cd xzutils && . make.xzutils && cd $TOPDIR/userland/gnu; }
+build-busybox-utils () { cd busybox-utils && . make.busybox-utils && cd $TOPDIR/userland/gnu; }
 
 ## Build each program.
 ##
@@ -26,7 +27,8 @@ build-gzip &&
 build-nano &&
 build-sed &&
 build-tar &&
-build-util-linux &&
-build-xzutils &&
+#build-util-linux &&
+#build-xzutils &&
+build-busybox-utils &&
 
 ${ECHOCMD} "Finished building GNU userland programs!"
