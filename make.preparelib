@@ -20,14 +20,8 @@ ${CPCMD} appimage/run.c tmpdir/run.c &>/dev/null | true &&
 ${CPCMD} appimage/AppRun.c tmpdir/AppRun.c &>/dev/null | true &&
 ${SEDCMD} -i -e "s:REPLACE:${PKGDEFAULTNAME}:g" tmpdir/run.c &&
 
-## Build dietlibc and use it to link two small c programs for the AppImage.
-## Currently broken with AppRun.c so use precompiled musl binaries to save size.
-
-##cd appimage/dietlibc
-##./make.dietlibc &&
-##${TOPDIR}/tmpdir/dietlibc-*/dietlibc-*/bin-*/diet ${CC} -s -static ${TOPDIR}/tmpdir/run.c -o ${TOPDIR}/working.prefix/run &&
-##${TOPDIR}/tmpdir/dietlibc-*/dietlibc-*/bin-*/diet ${CC} -s -static ${TOPDIR}/tmpdir/AppRun.c -o ${TOPDIR}/working.prefix/AppRun -lcompat && 
-##cd ${TOPDIR}
+## Use precompiled AppRun and run binaries.
+## We need these to be static, so building them on glibc systems isn't desirable.
 
 ${CPCMD} appimage/AppRun-${PLATFORM}-${UARCH} working.prefix/AppRun &&
 ${CPCMD} appimage/run-${PLATFORM}-${UARCH} working.prefix/run &&
