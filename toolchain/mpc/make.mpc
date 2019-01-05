@@ -7,6 +7,7 @@ ${TARCMD} -vxf ${TOPDIR}/sources/${SRCDIR}.tar.* -C ${TOPDIR}/tmpdir/${SRCDIR}/
 cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
 ${MKDIRCMD} build
 cd build
-../configure --prefix=${FINPREFIX} --host=$HOSTARCH --target=$MACHARCH &&
+../configure --prefix=${FINPREFIX} --host=$HOSTARCH --target=$MACHARCH --disable-shared \
+	--enable-static --with-gmp=${FINPREFIX} --with-mpfr=${FINPREFIX} &&
 ${MKCMD} &&
 ${MKCMD} install
