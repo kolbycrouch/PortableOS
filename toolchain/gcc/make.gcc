@@ -29,7 +29,8 @@ export LDFLAGS="${LDFLAGS//-no-pie/}"
 	--disable-target-libiberty --disable-libunwind-exceptions --disable-default-pie \
 	--disable-nls --enable-__cxa_atext --enable-threads=posix --libdir=${FINPREFIX}/lib \
 	--libexecdir=${FINPREFIX}/lib libat_cv_have_ifunc=no --enable-libstdcxx \
-	--with-linker-hash-style=gnu --enable-linker-build-id --enable-shared  --disable-libstdcxx-pch &&
+	--with-linker-hash-style=gnu --enable-linker-build-id --enable-shared  --disable-libstdcxx-pch \
+	--with-gmp=${FINPREFIX} --with-mpc=${FINPREFIX} --with-mpfr=${FINPREFIX} &&
 
 ${MKCMD} &&
 ${MKCMD} install &&
