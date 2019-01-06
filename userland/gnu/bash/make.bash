@@ -8,6 +8,6 @@ cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
 ${MKDIRCMD} build
 cd build
 FORCE_UNSAFE_CONFIGURE=1 ../configure --prefix=${FINPREFIX} --host=$MACHARCH \
-	 --target=$MACHARCH --build=$MACHARCH --with-bash-malloc --enable-static-link &&
+	 --target=$MACHARCH --build=$MACHARCH --without-bash-malloc --enable-static-link --without-installed-readline &&
 ${MKCMD} &&
 ${MKCMD} install 

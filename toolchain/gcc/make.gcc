@@ -17,7 +17,7 @@ if [ $UARCH == "arm" ]
 then 
 	ARCHCONFIG="$ARCHCONFIG --with-arch=armv7-a --with-fpu=vfpv3 --with-float=hard"
 fi
-${SEDCMD} -i "/ac_cpp=/s/\$CPPFLAGS/\$CPPFLAGS -O2/" {gcc,libiberty}/configure
+${SEDCMD} -i "/ac_cpp=/s/\$CPPFLAGS/\$CPPFLAGS -O2/" ../{gcc,libiberty}/configure
 export CFLAGS="${CFLAGS/-D_FORTIFY_SOURCE=2/}"
 export CXXFLAGS="${CXXFLAGS/-D_FORTIFY_SOURCE=2/}"
 export CFLAGS="${CFLAGS//-fno-PIE/}"
