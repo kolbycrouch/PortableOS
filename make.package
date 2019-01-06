@@ -24,14 +24,11 @@ source ./make.prefix
 
 ${MKDIRCMD} sources &&
 ${MKDIRCMD} tmpdir &&
-export CCPREFIX=$(${WHICHCMD} cc | ${XARGSCMD} ${DIRNAMECMD} | ${XARGSCMD} ${DIRNAMECMD})
-export CC="${CCPREFIX}/bin/cc"
-export CXX="${CCPREFIX}/bin/c++"
-
+	
 if [ "$FIRST" == "toolchain" ]; then
 	export TOOLCHAINBUILD=1
         cd ./toolchain &&
-        source ./make.toolchain all &&
+        ${SHELL} ./make.toolchain all &&
 	cd ${TOPDIR} &&
         ./make.preparelib 
         exit 0
@@ -45,6 +42,11 @@ if [ "$FIRST" == "userland" ]; then
 	./make.preparelib
 	exit 0
 fi
+
+export CCPREFIX=$(${WHICHCMD} cc | ${XARGSCMD} ${DIRNAMECMD} | ${XARGSCMD} ${DIRNAMECMD})
+export CC="${CCPREFIX}/bin/cc"
+export CXX="${CCPREFIX}/bin/c++"
+
 
 cd tmpdir &&
 ${FETCHCMD} https://ftp.netbsd.org/pub/pkgsrc/current/pkgsrc.tar.xz &&

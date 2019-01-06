@@ -1,17 +1,22 @@
 ## Copy all libraries needed by all binaries into the AppImage.
 ##
 
-${RMCMD} tmpdir/tmp.libs* &&
-for libs in ${FINPREFIX}/bin/*; do
- ldd "$libs" >>tmpdir/tmp.libs 
-done
-for libs in ${FINPREFIX}/sbin/*; do
- ldd "$libs" >>tmpdir/tmp.libs 
-done
-${CATCMD} tmpdir/tmp.libs | ${GREPCMD} -Po "(?<=>).*(?=\s*\\()" >tmpdir/tmp.libs2 &&
-${SORTCMD} -u tmpdir/tmp.libs2 >tmpdir/tmp.libs3 &&
-${MKDIRCMD} ${FINPREFIX}/lib &&
-${CPCMD} -L $(cat tmpdir/tmp.libs3) ${FINPREFIX}/lib/ &>/dev/null | true &&
+cd ${TOPDIR}
+if [ -n "$TOOLCHAINBUILD" ]; then
+        :
+else
+ ${RMCMD} tmpdir/tmp.libs* &&
+ for libs in ${FINPREFIX}/bin/*; do
+  ldd "$libs" >>tmpdir/tmp.libs 
+ done
+ for libs in ${FINPREFIX}/sbin/*; do
+  ldd "$libs" >>tmpdir/tmp.libs 
+ done
+ ${CATCMD} tmpdir/tmp.libs | ${GREPCMD} -Po "(?<=>).*(?=\s*\\()" >tmpdir/tmp.libs2 &&
+ ${SORTCMD} -u tmpdir/tmp.libs2 >tmpdir/tmp.libs3 &&
+ ${MKDIRCMD} ${FINPREFIX}/lib &&
+ ${CPCMD} -L $(cat tmpdir/tmp.libs3) ${FINPREFIX}/lib/ &>/dev/null | true 
+fi
 
 ## Setup AppImage programs in AppImage directory.
 ##
@@ -20,8 +25,8 @@ ${CPCMD} appimage/run.c tmpdir/run.c &>/dev/null | true &&
 ${CPCMD} appimage/AppRun.c tmpdir/AppRun.c &>/dev/null | true &&
 ${SEDCMD} -i -e "s:REPLACE:${PKGDEFAULTNAME}:g" tmpdir/run.c &&
 
-## Use precompiled AppRun and run binaries.
-## We need these to be static, so building them on glibc systems isn't desirable.
+## Use prebuilt binaries to minimize size.
+##
 
 ${CPCMD} appimage/AppRun-${PLATFORM}-${UARCH} working.prefix/AppRun &&
 ${CPCMD} appimage/run-${PLATFORM}-${UARCH} working.prefix/run &&
