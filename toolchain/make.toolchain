@@ -56,7 +56,8 @@ elif [ "$1" == "-a" ] || [ "$1" == "--all" ] || [ "$1" == "all" ]; then
 	export LIBRARY_PATH=${FINPREFIX}/lib
 	export PKG_CONFIG_LIBDIR=${FINPREFIX}/lib/pkgconfig
 	export HOSTARCH=${MACHARCH}
-
+	export PATH=${FINPREFIX}/bin:${FINPREFIX}/sbin:${PATH}
+	
 	##
 	##
 	
