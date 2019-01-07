@@ -8,6 +8,7 @@ build-bash () { cd bash && . make.bash && cd $TOPDIR/userland/gnu; }
 build-coreutils () { cd coreutils && . make.coreutils && cd $TOPDIR/userland/gnu; }
 build-findutils () { cd findutils  && . make.findutils && cd $TOPDIR/userland/gnu; }
 build-gawk () { cd gawk && . make.gawk && cd $TOPDIR/userland/gnu; }
+build-grep () { cd grep && . make.grep && cd $TOPDIR/userland/gnu; }
 build-gzip () { cd gzip && . make.gzip && cd $TOPDIR/userland/gnu; }
 build-nano () { cd nano && . make.nano && cd $TOPDIR/userland/gnu; }
 build-sed () { cd sed && . make.sed && cd $TOPDIR/userland/gnu; }
@@ -23,6 +24,7 @@ build-bash &&
 build-coreutils &&
 build-findutils &&
 build-gawk &&
+build-grep &&
 build-gzip &&
 build-nano &&
 build-sed &&

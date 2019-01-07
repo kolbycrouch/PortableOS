@@ -1,0 +1,14 @@
+${FETCHCMD} https://ftp.gnu.org/gnu/grep/grep-3.3.tar.xz
+export SRCDIR=grep-3.3
+${RMCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${MKDIRCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${TARCMD} -vxf ${TOPDIR}/sources/${SRCDIR}.tar.* -C ${TOPDIR}/tmpdir/${SRCDIR}/
+../patcher
+cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
+${MKDIRCMD} build
+cd build
+${SEDCMD} -i '/test-localename$(EXEEXT)/d' ../gnulib-tests/Makefile
+LDFLAGS="-static" FORCE_UNSAFE_CONFIGURE=1 ../configure --prefix=${FINPREFIX} --host=$MACHARCH \
+	 --target=$MACHARCH --build=$MACHARCH &&
+${MKCMD} &&
+${MKCMD} install 
