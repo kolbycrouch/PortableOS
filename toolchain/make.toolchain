@@ -46,8 +46,9 @@ elif [ "$1" == "-a" ] || [ "$1" == "--all" ] || [ "$1" == "all" ]; then
 	build-mpc &&
 	build-libressl &&
 	build-binutils &&
+	export BOOTSTRAP=0
 	build-gcc &&	
-
+	export BOOTSTRAP=1
 	## This is the start of the second bootstrap phase for the toolchain.
 	## We simply reconfigure some environment variables and rebuild compiler and linker.
 

@@ -9,6 +9,11 @@ ${MKDIRCMD} build
 cd build
 CFLAGS="-O2 -pipe -B${FINPREFIX}"
 CXXFLAGS="-O2 -pipe -B${FINPREFIX}"
+if [ "$BOOTSTRAP" == "0" ];then
+	BOOTSTRAPCONFIG="--disable-bootstrap"
+else
+	BOOTSTRAPCONFIG="--enable-bootstrap"
+fi
 if [[ "$MACHARCH" =~ .*musl ]]
 then
 	ARCHCONFIG="$ARCHCONFIG --disable-symvers"
@@ -23,9 +28,9 @@ export CXXFLAGS="${CXXFLAGS/-D_FORTIFY_SOURCE=2/}"
 export CFLAGS="${CFLAGS//-fno-PIE/}"
 export CXXFLAGS="${CXXFLAGS//-fno-PIE/}"
 export LDFLAGS="${LDFLAGS//-no-pie/}"
-../configure ${ARCHCONFIG} --disable-multilib --enable-languages=c,c++,lto --build=${MACHARCH}  \
+../configure ${ARCHCONFIG} ${BOOTSTRAPCONFIG} --disable-multilib --enable-languages=c,c++,lto --build=${MACHARCH}  \
 	--prefix=${FINPREFIX} --enable-fast-character \
-	--disable-libsanitizer --disable-werror --enable-lto --enable-plugins --enable-bootstrap \
+	--disable-libsanitizer --disable-werror --enable-lto --enable-plugins \
 	--disable-target-libiberty --disable-libunwind-exceptions --disable-default-pie \
 	--disable-nls --enable-__cxa_atext --enable-threads=posix --libdir=${FINPREFIX}/lib \
 	--libexecdir=${FINPREFIX}/lib libat_cv_have_ifunc=no --enable-libstdcxx \
