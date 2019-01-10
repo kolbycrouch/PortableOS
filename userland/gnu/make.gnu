@@ -20,6 +20,7 @@ build-busybox-utils () { cd busybox-utils && . make.busybox-utils && cd $TOPDIR/
 ## Build each program.
 ##
 
+build-busybox-utils &&
 build-bash &&
 build-coreutils &&
 build-findutils &&
@@ -31,6 +32,5 @@ build-sed &&
 build-tar &&
 #build-util-linux &&
 #build-xzutils &&
-build-busybox-utils &&
 
 ${ECHOCMD} "Finished building GNU userland programs!"
