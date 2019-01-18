@@ -3,7 +3,7 @@ export SRCDIR=busybox-1.30.0
 ${RMCMD} ${TOPDIR}/tmpdir/${SRCDIR}
 ${MKDIRCMD} ${TOPDIR}/tmpdir/${SRCDIR}
 ${TARCMD} -vxf ${TOPDIR}/sources/${SRCDIR}.tar.* -C ${TOPDIR}/tmpdir/${SRCDIR}/
-../patcher
+../../patcher
 ${CPCMD} utils.config ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}/.config
 cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
 ${MKCMD} &&

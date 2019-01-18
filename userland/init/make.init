@@ -1,0 +1,8 @@
+export SRCDIR=sinit
+${MKDIRCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${GITCMD} clone https://git.suckless.org/sinit ${TOPDIR}/tmpdir/${SRCDIR}/sinit 
+../patcher
+cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
+${MKCMD} 
+${MKDIRCMD} ${FINPREFIX}/sbin
+${CPCMD} ./${SRCDIR} ${FINPREFIX}/sbin/init

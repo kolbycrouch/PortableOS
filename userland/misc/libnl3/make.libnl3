@@ -1,0 +1,12 @@
+${FETCHCMD} https://www.infradead.org/~tgr/libnl/files/libnl-3.2.25.tar.gz
+export SRCDIR=libnl-3.2.25
+${RMCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${MKDIRCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${TARCMD} -vxf ${TOPDIR}/sources/${SRCDIR}.tar.* -C ${TOPDIR}/tmpdir/${SRCDIR}/
+../patcher
+cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
+${MKDIRCMD} build
+cd build
+../configure --prefix=/ --disable-shared --enable-static &&
+${MKCMD} &&
+${MKCMD} DESTDIR=${TOPDIR}/tmpdir/libnl3-install install 

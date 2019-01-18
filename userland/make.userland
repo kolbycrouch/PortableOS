@@ -4,13 +4,22 @@ set -o pipefail
 ## Define functions for building each userland.
 ##
 
+build-init () { cd init && . make.init && cd $TOPDIR/userland; }
 build-gnu () { cd gnu && . make.gnu && cd $TOPDIR/userland; }
+build-busybox () { cd busybox && . make.busybox && cd $TOPDIR/userland; }
+build-busybox-utils () { cd busybox/busybox-utils && . make.busybox-utils && cd $TOPDIR/userland; }
+build-libnl3 () { cd misc/libnl3 && . make.libnl3 && cd $TOPDIR/userland; }
+build-wpasupplicant () { cd misc/wpasupplicant && . make.wpasupplicant && cd $TOPDIR/userland; }
 
 ## Build userland.
 ##
 
 if [[ "$USERLAND" == "gnu" ]]; then
-build-gnu
+ build-init 
+ build-busybox-utils 
+ build-gnu 
+ build-libnl3 
+ build-wpasupplicant
 fi
 
 

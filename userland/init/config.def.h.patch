@@ -1,0 +1,11 @@
+--- sinit/config.def.h	2019-01-11 15:55:35.806297569 -0600
++++ sinit/config.def.h.new	2019-01-11 15:56:52.274297429 -0600
+@@ -1,5 +1,5 @@
+ /* See LICENSE file for copyright and license details. */
+ 
+-static char *const rcinitcmd[]     = { "/bin/rc.init", NULL };
+-static char *const rcrebootcmd[]   = { "/bin/rc.shutdown", "reboot", NULL };
+-static char *const rcpoweroffcmd[] = { "/bin/rc.shutdown", "poweroff", NULL };
++static char *const rcinitcmd[]     = { "/etc/rc.init", NULL };
++static char *const rcrebootcmd[]   = { "/etc/rc.halt", "reboot", NULL };
++static char *const rcpoweroffcmd[] = { "/etc/rc.halt", "halt", NULL };

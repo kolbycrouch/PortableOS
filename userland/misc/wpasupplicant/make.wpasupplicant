@@ -1,0 +1,15 @@
+${FETCHCMD} https://w1.fi/releases/wpa_supplicant-2.7.tar.gz
+export SRCDIR=wpa_supplicant-2.7
+${RMCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${MKDIRCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${TARCMD} -vxf ${TOPDIR}/sources/${SRCDIR}.tar.* -C ${TOPDIR}/tmpdir/${SRCDIR}/
+../../patcher
+cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
+cd wpa_supplicant
+${CPCMD} defconfig .config 
+${ECHOCMD} "CFLAGS += -I../../../libnl3-install/include/libnl3" >> Makefile
+${ECHOCMD} "LDFLAGS = -s -static -L../../../libnl3-install/lib -lcrypto -lpthread" >> Makefile
+${MKCMD} 
+${CPCMD} wpa_cli ${FINPREFIX}/sbin/wpa_cli
+${CPCMD} wpa_passphrase ${FINPREFIX}/sbin/wpa_passphrase
+${CPCMD} wpa_supplicant ${FINPREFIX}/sbin/wpa_supplicant
