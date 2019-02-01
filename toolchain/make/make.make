@@ -7,6 +7,11 @@ ${TARCMD} -vxf ${TOPDIR}/sources/${SRCDIR}.tar.* -C ${TOPDIR}/tmpdir/${SRCDIR}/
 cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
 ${MKDIRCMD} build
 cd build
-../configure --prefix=${FINPREFIX} --host=$MACHARCH --target=$MACHARCH --build=$MACHARCH &&
+
+if [ "$STATICTOOLCHAIN" == "yes" ]; then
+	STATIC="LDFLAGS=-static"
+fi
+
+../configure $STATIC --prefix=${FINPREFIX} --host=$MACHARCH --target=$MACHARCH --build=$MACHARCH &&
 ${MKCMD} &&
 ${MKCMD} install 

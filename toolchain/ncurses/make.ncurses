@@ -19,6 +19,15 @@ cd wide-build
 ${MKCMD} &&
 ${MKCMD} install &&
 
+if [ "$STATICTOOLCHAIN" == "yes" ]; then
+	${RMCMD} ../wide-build/*
+	LDFLAGS=-static ../configure --prefix=${FINPREFIX} --without-debug --without-ada \
+        	--without-tests --enable-pc-files --with-pkg-config-libdir=${FINPREFIX}/lib/pkgconfig \
+        	--enable-widec --enable-ext-colors --with-manpage-symlinks &&
+	${MKCMD}
+	${MKCMD} install
+fi
+ 
 # Make non-wide libraries links to wide ones.
 
 for lib in curses ncurses form panel menu; do
@@ -49,6 +58,14 @@ cd build
 	--build=$MACHARCH --with-shared --without-debug --without-ada \
 	--without-tests --enable-pc-files --with-pkg-config-libdir=${FINPREFIX}/lib/pkgconfig &&
 ${MKCMD} 
+
+if [ "$STATICTOOLCHAIN" == "yes" ]; then
+	${RMCMD} ../build/*
+	LDFLAGS=-static ../configure --prefix=${FINPREFIX} --host=$MACHARCH --target=$MACHARCH \
+        	--build=$MACHARCH --with-shared --without-debug --without-ada \
+        	--without-tests --enable-pc-files --with-pkg-config-libdir=${FINPREFIX}/lib/pkgconfig 
+	${MKCMD}
+fi
 
 # non-wide compat.
 

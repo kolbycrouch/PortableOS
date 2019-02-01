@@ -1,5 +1,5 @@
-${FETCHCMD} https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.19.11.tar.xz
-export SRCDIR=linux-4.19.11
+${FETCHCMD} https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.4.154.tar.xz
+export SRCDIR=linux-4.4.154
 ${RMCMD} ${TOPDIR}/tmpdir/${SRCDIR}
 ${MKDIRCMD} ${TOPDIR}/tmpdir/${SRCDIR}
 ${TARCMD} -vxf ${TOPDIR}/sources/${SRCDIR}.tar.* -C ${TOPDIR}/tmpdir/${SRCDIR}/
@@ -7,4 +7,6 @@ ${TARCMD} -vxf ${TOPDIR}/sources/${SRCDIR}.tar.* -C ${TOPDIR}/tmpdir/${SRCDIR}/
 cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
 if [ "$UARCH" == "x64" ]; then
 ${MKCMD} headers_install ARCH=x86 INSTALL_HDR_PATH=${FINPREFIX} 
+elif [ "$UARCH" == "a64" ]; then
+${MKCMD} headers_install ARCH=arm64 INSTALL_HDR_PATH=${FINPREFIX}
 fi

@@ -51,7 +51,10 @@ if [ -n "$TOOLCHAINBUILD" ]; then
 else
 	${RMCMD} $(${CATCMD} ../prune/*) &>/dev/null | true
 fi
+
 cd ${TOPDIR}
+
+${RMCMD} working.prefix/lib64
 
 ## Copy AppImage template files to the AppImage directory and finish the build.
 ##

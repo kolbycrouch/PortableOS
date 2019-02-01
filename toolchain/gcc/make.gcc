@@ -7,8 +7,8 @@ ${TARCMD} -vxf ${TOPDIR}/sources/${SRCDIR}.tar.* -C ${TOPDIR}/tmpdir/${SRCDIR}/
 cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
 ${MKDIRCMD} build
 cd build
-CFLAGS="-O2 -pipe -B${FINPREFIX}"
-CXXFLAGS="-O2 -pipe -B${FINPREFIX}"
+CFLAGS="-O2 -pipe -B${FINPREFIX} -fPIC"
+CXXFLAGS="-O2 -pipe -B${FINPREFIX} -fPIC"
 if [ "$BOOTSTRAP" == "0" ];then
 	BOOTSTRAPCONFIG="--disable-bootstrap"
 else
@@ -28,16 +28,36 @@ export CXXFLAGS="${CXXFLAGS/-D_FORTIFY_SOURCE=2/}"
 export CFLAGS="${CFLAGS//-fno-PIE/}"
 export CXXFLAGS="${CXXFLAGS//-fno-PIE/}"
 export LDFLAGS="${LDFLAGS//-no-pie/}"
-../configure ${ARCHCONFIG} ${BOOTSTRAPCONFIG} --disable-multilib --enable-languages=c,c++,lto --build=${MACHARCH}  \
-	--prefix=${FINPREFIX} --enable-fast-character \
-	--disable-libsanitizer --disable-werror --enable-lto --enable-plugins \
+
+
+## Use lib instead of lib64. Multilib isn't relevant for portable applications.
+## 
+
+${SEDCMD} -i -e "s:lib64:lib:g" ../gcc/config/aarch64/t-aarch64-linux
+${SEDCMD} -i -e "s:lib64:lib:g" ../gcc/config/i386/t-linux64
+
+## Change dynamic linker to the one in our prefix.
+##
+
+${SEDCMD} -i -e "s:/lib:${FINPREFIX}/lib:g" ../gcc/config/aarch64/aarch64-linux.h
+${SEDCMD} -i -e "s:/lib:${FINPREFIX}/lib:g" ../gcc/config/i386/linux64.h
+${SEDCMD} -i -e "s:/lib64:${FINPREFIX}/lib:g" ../gcc/config/i386/linux64.h
+
+if [ "$STATICTOOLCHAIN" == "yes" ]; then
+        STATIC="LDFLAGS=-static --with-boot-ldflags=-static --with-stage1-ldflags=-static"
+#	BOOTSTRAPCONFIG="--disable-bootstrap"
+fi
+
+../configure ${STATIC} ${ARCHCONFIG} ${BOOTSTRAPCONFIG} --disable-multilib --enable-languages=c,c++,lto --build=${MACHARCH}  \
+	--prefix=${FINPREFIX} --enable-fast-character --host=${MACHARCH} \
+	--disable-libsanitizer --disable-werror --disable-lto --disable-plugins \
 	--disable-target-libiberty --disable-libunwind-exceptions --disable-default-pie \
 	--disable-nls --enable-__cxa_atext --enable-threads=posix --libdir=${FINPREFIX}/lib \
 	--libexecdir=${FINPREFIX}/lib libat_cv_have_ifunc=no --enable-libstdcxx \
-	--with-linker-hash-style=gnu --enable-linker-build-id --enable-shared  --disable-libstdcxx-pch \
+	--with-linker-hash-style=gnu --enable-linker-build-id --disable-shared  --disable-libstdcxx-pch \
 	--with-gmp=${FINPREFIX} --with-mpc=${FINPREFIX} --with-mpfr=${FINPREFIX} &&
 
-${MKCMD} &&
+${MKCMD} 
 ${MKCMD} install &&
 
 

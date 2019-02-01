@@ -7,6 +7,13 @@ ${TARCMD} -vxf ${TOPDIR}/sources/${SRCDIR}.tar.* -C ${TOPDIR}/tmpdir/${SRCDIR}/
 cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
 ${MKDIRCMD} build
 cd build
-EMACS=no ../configure --prefix=${FINPREFIX}  &&
-${MKCMD} &&
+EMACS=no ../configure --prefix=${FINPREFIX}  
+${MKCMD} 
 ${MKCMD} install
+
+if [ "$STATICTOOLCHAIN" == "yes" ]; then
+	${RMCMD} ../build/*
+	LDFLAGS=-static EMACS=no ../configure --prefix=${FINPREFIX} --disable-shared --enable-static
+	${MKCMD} LDFLAGS="--static"
+	${MKCMD} install
+fi

@@ -47,6 +47,6 @@ Edit make.config to match your settings then run make.package --help for details
 
 - LLVM/clang, pcc and tcc toolchain support.
 - Tarball install support (had it before, just need to add again)
-- Cross platform support for BSD/OSX/Haiku/Cygwin etc.. (Linux is only supported right now, and non-x64 hasn't been tested)
+- Cross platform support for BSD/OSX/Haiku/Cygwin etc.. (Only Linux is supported right now, and only x64 and arm64 have been tested)
 - Support for creating install images of a base system for use as a full distribution with pkgsrc as the package manager.
 - Better pruning for useless files in the prefix, and more re-usability for better compile times.

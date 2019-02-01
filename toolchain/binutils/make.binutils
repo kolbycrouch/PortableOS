@@ -10,12 +10,17 @@ cd build
 CFLAGS+="-B${FINPREFIX}"
 CXXFLAGS+="-B${FINPREFIX}"
 if [[ "$MACHARCH" =~ .*musl ]]; then
-        ARCHCONFIG="$ARCHCONFIG --disable-symvers --enable-ld=default"
+        ARCHCONFIG="$ARCHCONFIG --disable-symvers --enable-ld=default --enable-gold=yes"
 elif [[ "$MACHARCH" =~ .*gnu ]]; then
-	ARCHCONFIG="$ARCHCONFIG --enable-gold=default"
+	ARCHCONFIG="$ARCHCONFIG --enable-gold=default --enable-ld=yes"
 fi
+
+if [ "$STATICTOOLCHAIN" == "yes" ]; then
+	STATIC="LDFLAGS=--static"
+fi
+
 ../configure $ARCHCONFIG --prefix=${FINPREFIX} --build=${MACHARCH}  \
-	--disable-werror --enable-lto --disable-nls \
-	--with-lib-path=${FINPREFIX}/lib --with-mmap && 
-${MKCMD} &&
+	--disable-werror --disable-lto --disable-nls \
+	--with-lib-path=${FINPREFIX}/lib --with-mmap 
+${MKCMD} $STATIC &&
 ${MKCMD} install 

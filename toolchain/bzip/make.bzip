@@ -5,5 +5,10 @@ ${MKDIRCMD} ${TOPDIR}/tmpdir/${SRCDIR}
 ${TARCMD} -vxf ${TOPDIR}/sources/download -C ${TOPDIR}/tmpdir/${SRCDIR}/
 ../patcher
 cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
-CFLAGS="-fPIC" ${MKCMD} &&
+
+if [ "$STATICTOOLCHAIN" == "yes" ]; then
+        STATIC="LDFLAGS=-static"
+fi
+	
+CFLAGS="-fPIC" ${MKCMD} $STATIC &&
 ${MKCMD} install 
