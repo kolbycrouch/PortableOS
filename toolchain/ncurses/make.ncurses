@@ -11,11 +11,12 @@ ${MKDIRCMD} wide-build
 ${MKDIRCMD} build
 
 ## Build wide support first.
+##
 
 cd wide-build
 ../configure --prefix=${FINPREFIX} --with-shared --without-debug --without-ada \
 	--without-tests --enable-pc-files --with-pkg-config-libdir=${FINPREFIX}/lib/pkgconfig \
-	--enable-widec --enable-ext-colors --with-manpage-symlinks &&
+	--enable-widec --enable-ext-colors --with-manpage-symlinks --disable-database --with-fallbacks=linux,vt100 &&
 ${MKCMD} &&
 ${MKCMD} install &&
 
@@ -23,61 +24,86 @@ if [ "$STATICTOOLCHAIN" == "yes" ]; then
 	${RMCMD} ../wide-build/*
 	LDFLAGS=-static ../configure --prefix=${FINPREFIX} --without-debug --without-ada \
         	--without-tests --enable-pc-files --with-pkg-config-libdir=${FINPREFIX}/lib/pkgconfig \
-        	--enable-widec --enable-ext-colors --with-manpage-symlinks &&
+        	--enable-widec --enable-ext-colors --with-manpage-symlinks --disable-database --with-fallbacks=linux,vt100 &&
 	${MKCMD}
 	${MKCMD} install
 fi
  
-# Make non-wide libraries links to wide ones.
+## Make non-wide libraries links to wide ones.
+##
 
 for lib in curses ncurses form panel menu; do
-		${RMCMD} ${WRKPREFIX}/${FINPREFIX}/lib/lib${lib}.so
-		${ECHOCMD} "INPUT(-l${lib}w)" >${WRKPREFIX}/${FINPREFIX}/lib/lib${lib}.so
-		${CHMODCMD} 755 ${WRKPREFIX}/${FINPREFIX}/lib/lib${lib}.so
-		${LNCMD} -sf lib${lib}w.a ${WRKPREFIX}/${FINPREFIX}/lib/lib${lib}.a
+		${RMCMD} ${FINPREFIX}/lib/lib${lib}.so
+		${ECHOCMD} "INPUT(-l${lib}w)" >${FINPREFIX}/lib/lib${lib}.so
+		${CHMODCMD} 755 ${FINPREFIX}/lib/lib${lib}.so
+		${LNCMD} -sf lib${lib}w.a ${FINPREFIX}/lib/lib${lib}.a
 done
-${LNCMD} -sf libncurses++w.a ${WRKPREFIX}/${FINPREFIX}/lib/libncurses++.a
+${LNCMD} -sf libncurses++w.a ${FINPREFIX}/lib/libncurses++.a
 
-# Some packages need -lcurses.
+## Some packages need -lcurses.
+##
 
-	${RMCMD} ${WRKPREFIX}/${FINPREFIX}/lib/libcursesw.so
-	${ECHOCMD} "INPUT(-lncursesw)" >${WRKPREFIX}/${FINPREFIX}/lib/libcursesw.so
-	${CHMODCMD} 755 ${WRKPREFIX}/${FINPREFIX}/lib/libcursesw.so
-	${LNCMD} -sf libncurses.so ${WRKPREFIX}/${FINPREFIX}/lib/libcurses.so
-	${LNCMD} -sf libncursesw.a ${WRKPREFIX}/${FINPREFIX}/lib/libcursesw.a
-	${LNCMD} -sf libncurses.a ${WRKPREFIX}/${FINPREFIX}/lib/libcurses.a
+	${RMCMD} ${FINPREFIX}/lib/libcursesw.so
+	${ECHOCMD} "INPUT(-lncursesw)" >${FINPREFIX}/lib/libcursesw.so
+	${CHMODCMD} 755 ${FINPREFIX}/lib/libcursesw.so
+	${LNCMD} -sf libncurses.so ${FINPREFIX}/lib/libcurses.so
+	${LNCMD} -sf libncursesw.a ${FINPREFIX}/lib/libcursesw.a
+	${LNCMD} -sf libncurses.a ${FINPREFIX}/lib/libcurses.a
 
-# Change back to top directory.
+## Change back to top directory.
+##
 
 cd ../
 
-# Build normal now.
+## Build normal now.
+##
 
 cd build
 ../configure --prefix=${FINPREFIX} --host=$MACHARCH --target=$MACHARCH \
 	--build=$MACHARCH --with-shared --without-debug --without-ada \
-	--without-tests --enable-pc-files --with-pkg-config-libdir=${FINPREFIX}/lib/pkgconfig &&
+	--without-tests --enable-pc-files --with-pkg-config-libdir=${FINPREFIX}/lib/pkgconfig \ 
+	--disable-database --with-fallbacks=linux,vt100
 ${MKCMD} 
 
 if [ "$STATICTOOLCHAIN" == "yes" ]; then
 	${RMCMD} ../build/*
 	LDFLAGS=-static ../configure --prefix=${FINPREFIX} --host=$MACHARCH --target=$MACHARCH \
         	--build=$MACHARCH --with-shared --without-debug --without-ada \
-        	--without-tests --enable-pc-files --with-pkg-config-libdir=${FINPREFIX}/lib/pkgconfig 
+        	--without-tests --enable-pc-files --with-pkg-config-libdir=${FINPREFIX}/lib/pkgconfig \
+		--disable-database --with-fallbacks=linux,vt100
 	${MKCMD}
 fi
 
-# non-wide compat.
+## non-wide compat.
+##
 
 install -Dm755 lib/libncurses.so.${VERSION} \
-		${WRKPREFIX}/${FINPREFIX}/lib/libncurses.so.${VERSION}
+		${FINPREFIX}/lib/libncurses.so.${VERSION}
 
-# Version compat symlinks
+## Version compat symlinks.
+##
 
 for f in ncurses form panel menu; do
-		${LNCMD} -sfr ${WRKPREFIX}/${FINPREFIX}/lib/lib${f}w.so.6 \
-			${WRKPREFIX}/${FINPREFIX}/lib/lib${f}w.so.5
+		${LNCMD} -sfr ${FINPREFIX}/lib/lib${f}w.so.6 \
+			${FINPREFIX}/lib/lib${f}w.so.5
+		${LNCMD} -sfr ${FINPREFIX}/lib/lib${f}.so.6 \
+                        ${FINPREFIX}/lib/lib${f}.so.5
 done
-${LNCMD} -sf ncursesw6-config ${WRKPREFIX}/${FINPREFIX}/bin/ncursesw5-config &&
-${LNCMD} -sf ncursesw6-config ${WRKPREFIX}/${FINPREFIX}/bin/ncurses5-config &&
+
+## libtinfo symlinks.
+##
+
+${LNCMD} -sf ${FINPREFIX}/lib/libncursesw.so.6 ${FINPREFIX}/lib/libtinfo.so.6 
+${LNCMD} -sf ${FINPREFIX}/lib/libncursesw.so.6 ${FINPREFIX}/lib/libtinfo.so.5
+${LNCMD} -sf ${FINPREFIX}/lib/libncursesw.a ${FINPREFIX}/lib/libtinfo.a
+
+## ncurses5-config symlinks.
+##
+
+${LNCMD} -sf ${FINPREFIX}/bin/ncursesw6-config ${FINPREFIX}/bin/ncursesw5-config &&
+${LNCMD} -sf ${FINPREFIX}/bin/ncursesw6-config ${FINPREFIX}/bin/ncurses5-config &&
+
+## include compat.
+##
+
 ${CPCMD} ${TOPDIR}/working.prefix/include/ncursesw/* ${TOPDIR}/working.prefix/include/

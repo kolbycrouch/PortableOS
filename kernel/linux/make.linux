@@ -1,14 +1,47 @@
-${FETCHCMD} https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.19.2.tar.xz
-SRCDIR=linux-4.19.2
-${RMCMD} $SRCDIR
-${TARCMD} -vxf *.tar.xz
-../patcher
-cd $SRCDIR
-${MKDIRCMD} build
-cd build
-../configure --prefix=${FINPREFIX} --host=$MACHARCH --target=$MACHARCH --build=$MACHARCH \
-	--disable-werror --enable-lto --enable-gold=default \
-	--with-lib-path=${FINPREFIX}/lib &&
-${MKCMD} &&
-${MKCMD} install && 
-${MKCMD} clean
+${FETCHCMD} https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.20.7.tar.xz
+export SRCDIR=linux-4.20.7
+${RMCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${MKDIRCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${TARCMD} -vxf ${TOPDIR}/sources/${SRCDIR}.tar.* -C ${TOPDIR}/tmpdir/${SRCDIR}/
+../../patcher
+cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
+${CPCMD} ${TOPDIR}/kernel/linux/${UARCH}-${SRCDIR}.config ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}/.config
+
+## Initialize kernel build directory as a git repo.
+## So we can apply git patches.
+
+${GITCMD} init
+${GITCMD} add .
+
+## Copy git patches into build directory and apply them.
+##
+
+# Ultra KSM for better memory deduplication.
+
+${CPCMD} ${TOPDIR}/kernel/linux/uksm-4.20.patch ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}/
+${GITCMD} apply uksm-4.20.patch
+
+## Use sed to apply any custom changes to the kernel.
+##
+
+# Change firmware directory to /boot/firmware
+
+${SEDCMD} -i -e "s:/lib/firmware:/boot/firmware:g" drivers/base/firmware_loader/main.c
+
+# Increase default swappiness to 100, for using ZRAM.
+
+${SEDCMD} -i -e "s:60:100:g" mm/vmscan.c
+
+## Build and kernel image and modules.
+##
+
+${MKCMD} 
+${MKDIRCMD} ${TOPDIR}/working.prefix/boot
+
+if [ "$UARCH" == "x64" ]; then
+	${CPCMD} arch/x86/boot/bzImage ${TOPDIR}/working.prefix/boot/${SRCDIR}
+elif [ "$UARCH" == "a64" ]; then
+	${CPCMD} arch/arm64/boot/Image ${TOPDIR}/working.prefix/boot/${SRCDIR}
+fi
+
+${MKCMD} modules_install INSTALL_MOD_PATH=${TOPDIR}/working.prefix/

@@ -1,10 +1,19 @@
-${FETCHCMD} https://www.musl-libc.org/releases/musl-1.1.20.tar.gz
-export SRCDIR=musl-1.1.20
+${FETCHCMD} https://www.musl-libc.org/releases/musl-1.1.21.tar.gz
+export SRCDIR=musl-1.1.21
 ${RMCMD} ${TOPDIR}/tmpdir/${SRCDIR}
 ${MKDIRCMD} ${TOPDIR}/tmpdir/${SRCDIR}
 ${TARCMD} -vxf ${TOPDIR}/sources/${SRCDIR}.tar.* -C ${TOPDIR}/tmpdir/${SRCDIR}/
 ../patcher
 cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
+
+## Replace dynamic loader search path's with our custom prefix.
+##
+
+${SEDCMD} -i -e "s,/lib:/usr/local/lib:/usr/lib,${FINPREFIX}/lib,g" ldso/dynlink.c
+
+## Configure, build and install.
+##
+
 ${MKDIRCMD} build
 cd build
 ../configure --syslibdir=${FINPREFIX}/lib --prefix=${FINPREFIX} --exec-prefix=${FINPREFIX} &&

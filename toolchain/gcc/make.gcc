@@ -40,28 +40,29 @@ ${SEDCMD} -i -e "s:lib64:lib:g" ../gcc/config/i386/t-linux64
 ##
 
 ${SEDCMD} -i -e "s:/lib:${FINPREFIX}/lib:g" ../gcc/config/aarch64/aarch64-linux.h
-${SEDCMD} -i -e "s:/lib:${FINPREFIX}/lib:g" ../gcc/config/i386/linux64.h
-${SEDCMD} -i -e "s:/lib64:${FINPREFIX}/lib:g" ../gcc/config/i386/linux64.h
+${SEDCMD} -i -e "s:lib64:lib:g" ../gcc/config/i386/linux64.h
+${SEDCMD} -i -e "s:/lib:${FINPREFIX}/lib:g" ../gcc/config/i386/linux64.h 
 
 if [ "$STATICTOOLCHAIN" == "yes" ]; then
         STATIC="LDFLAGS=-static --with-boot-ldflags=-static --with-stage1-ldflags=-static"
-#	BOOTSTRAPCONFIG="--disable-bootstrap"
+	PLUGINCONFIG="--disable-lto --disable-plugins"
+else
+	PLUGINCONFIG="--enable-lto --enable-plugins"
 fi
 
-../configure ${STATIC} ${ARCHCONFIG} ${BOOTSTRAPCONFIG} --disable-multilib --enable-languages=c,c++,lto --build=${MACHARCH}  \
-	--prefix=${FINPREFIX} --enable-fast-character --host=${MACHARCH} \
-	--disable-libsanitizer --disable-werror --disable-lto --disable-plugins \
+../configure ${STATIC} ${ARCHCONFIG} ${BOOTSTRAPCONFIG} ${PLUGINCONFIG} --disable-multilib --enable-languages=c,c++,lto  \
+	--prefix=${FINPREFIX} --enable-fast-character --host=${MACHARCH} --build=${MACHARCH} --disable-werror \
 	--disable-target-libiberty --disable-libunwind-exceptions --disable-default-pie \
 	--disable-nls --enable-__cxa_atext --enable-threads=posix --libdir=${FINPREFIX}/lib \
-	--libexecdir=${FINPREFIX}/lib libat_cv_have_ifunc=no --enable-libstdcxx \
-	--with-linker-hash-style=gnu --enable-linker-build-id --disable-shared  --disable-libstdcxx-pch \
+	--libexecdir=${FINPREFIX}/lib libat_cv_have_ifunc=no --enable-libstdcxx --disable-libsanitizer \
+	--with-linker-hash-style=gnu --enable-linker-build-id --enable-shared  --disable-libstdcxx-pch \
 	--with-gmp=${FINPREFIX} --with-mpc=${FINPREFIX} --with-mpfr=${FINPREFIX} &&
 
 ${MKCMD} 
 ${MKCMD} install &&
 
 
-## link gcc binary to ${FINPREFIX}/bin/cc
+## link gcc binaries to ${FINPREFIX}/bin/c*
 
 ${LNCMD} -sfr ${FINPREFIX}/bin/gcc ${FINPREFIX}/bin/cc
-
+${LNCMD} -sfr ${FINPREFIX}/bin/g++ ${FINPREFIX}/bin/c++

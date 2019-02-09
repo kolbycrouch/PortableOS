@@ -1,0 +1,9 @@
+## We need this to run this script stand-alone.
+##
+
+source ./make.config
+
+## Remove temp files.
+##
+
+${RMCMD} tmpdir log.prefix log.pkgname

@@ -1,6 +1,6 @@
 TMPDIR=/tmp $MKTEMPCMD -d -t .pkg-${PKGDEFAULTNAME}XXXXXX >log.prefix &&
 export FINPREFIX=$(cat log.prefix) &&
-${RMCMD} working.prefix tmpdir &&
+${RMCMD} working.prefix &&
 ${MKDIRCMD} working.prefix &&
 ${RMCMD} ${FINPREFIX} &&
 ${LNCMD} -sfn $(pwd)/working.prefix ${FINPREFIX}

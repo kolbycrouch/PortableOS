@@ -1,10 +1,21 @@
-${FETCHCMD} https://ftp.gnu.org/gnu/glibc/glibc-2.28.tar.xz
-export SRCDIR=glibc-2.28
+${FETCHCMD} https://ftp.gnu.org/gnu/glibc/glibc-2.29.tar.xz
+export SRCDIR=glibc-2.29
 ${RMCMD} ${TOPDIR}/tmpdir/${SRCDIR}
 ${MKDIRCMD} ${TOPDIR}/tmpdir/${SRCDIR}
 ${TARCMD} -vxf ${TOPDIR}/sources/${SRCDIR}.tar.* -C ${TOPDIR}/tmpdir/${SRCDIR}/
 ../patcher
 cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
+
+## Replace default runtime loader path's.
+##
+
+${SEDCMD} -i -e "s:/lib/ld-linux.so.2:${FINPREFIX}/lib/ld-linux.so.2:g" sysdeps/unix/sysv/linux/x86_64/ldconfig.h
+${SEDCMD} -i -e "s:/libx32/ld-linux-x32.so.2:${FINPREFIX}/lib/ld-linux-x32.so.2:g" sysdeps/unix/sysv/linux/x86_64/ldconfig.h
+${SEDCMD} -i -e "s:/lib64/ld-linux-x86-64.so.2:${FINPREFIX}/lib/ld-linux-x86-64.so.2:g" sysdeps/unix/sysv/linux/x86_64/ldconfig.h
+
+## Configure, build and install.
+##
+
 ${MKDIRCMD} build
 cd build
 if [ $SUBARCH = "armv6" ]

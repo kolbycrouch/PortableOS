@@ -1,3 +1,10 @@
+## We need to read these files for this script to run stand-alone.
+##
+
+source ./make.config
+export FINPREFIX=$(cat log.prefix)
+export PKGDEFAULTNAME=$(cat log.pkgname)
+
 ## Copy all libraries needed by all binaries into the AppImage.
 ##
 
@@ -59,10 +66,16 @@ ${RMCMD} working.prefix/lib64
 ## Copy AppImage template files to the AppImage directory and finish the build.
 ##
 
+if [ -n "$TOOLCHAINBUILD" ]; then
+        ${CPCMD} appimage/setup.sh working.prefix/setup.sh
+	${SEDCMD} -i -e "s:REPLACEPREFIX:${FINPREFIX}:g" working.prefix/setup.sh
+	${SEDCMD} -i -e "s:REPLACEPKGNAME:${PKGDEFAULTNAME}:g" working.prefix/setup.sh
+else
+	${TOUCHCMD} working.prefix/setup.sh
+fi
+
 ${CPCMD} appimage/template.desktop working.prefix/${PKGDEFAULTNAME}.desktop | true &&
 ${TOUCHCMD} working.prefix/null.png &&
-${TOUCHCMD} working.prefix/setup.sh &&
 ${CHMODCMD} +x working.prefix/setup.sh &&
-${RMCMD} log.prefix tmpdir &&
 ${ECHOCMD} "Package build complete!" &&
 ${ECHOCMD} "Please modify the .desktop and setup.sh files in working.prefix/, then run ./make.appimage"

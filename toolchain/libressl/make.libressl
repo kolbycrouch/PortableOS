@@ -7,7 +7,8 @@ ${TARCMD} -vxf ${TOPDIR}/sources/${SRCDIR}.tar.* -C ${TOPDIR}/tmpdir/${SRCDIR}/
 cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
 ${MKDIRCMD} build
 cd build
-../configure --prefix=${FINPREFIX} --host=$MACHARCH --target=$MACHARCH \
+
+CFLAGS="-fPIC" ../configure --prefix=${FINPREFIX} --host=$MACHARCH --target=$MACHARCH \
 	--build=$MACHARCH --disable-hardening --enable-static --enable-shared 
 ${MKCMD} 
 ${MKCMD} install
@@ -17,7 +18,7 @@ ${MKCMD} install
 
 if [ "$STATICTOOLCHAIN" == "yes" ]; then
         ${RMCMD} ../build/* 
-	../configure LDFLAGS=-static --prefix=${FINPREFIX} --host=$MACHARCH --target=$MACHARCH \
+	CFLAGS="-fPIC" ../configure LDFLAGS=-static --prefix=${FINPREFIX} --host=$MACHARCH --target=$MACHARCH \
 	        --build=$MACHARCH --disable-hardening --enable-static --disable-shared
 	${MKCMD} LDFLAGS="--static"
 	${MKCMD} install
