@@ -1,0 +1,22 @@
+export SRCDIR=grub
+${MKDIRCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${GITCMD} clone https://git.savannah.gnu.org/git/grub.git ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR} 
+../patcher
+cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
+
+## Make sure these are unset.
+##
+
+unset PYTHONHOME
+unset PYTHONPATH
+
+## Build, configure and install.
+##
+
+./autogen.sh
+./configure LDFLAGS="-static" --disable-werror --prefix=/etc/grub --disable-nls
+${MKCMD} LDFLAGS="--static"
+${MKDIRCMD} ${TOPDIR}/working.prefix/etc
+${MKDIRCMD} ${TOPDIR}/tmpdir/grub2-install
+${MKCMD} DESTDIR=${TOPDIR}/tmpdir/grub2-install install
+${CPCMD} ${TOPDIR}/tmpdir/grub2-install/etc/grub ${TOPDIR}/working.prefix/etc/

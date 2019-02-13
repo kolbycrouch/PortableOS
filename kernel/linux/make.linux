@@ -3,7 +3,6 @@ export SRCDIR=linux-4.20.7
 ${RMCMD} ${TOPDIR}/tmpdir/${SRCDIR}
 ${MKDIRCMD} ${TOPDIR}/tmpdir/${SRCDIR}
 ${TARCMD} -vxf ${TOPDIR}/sources/${SRCDIR}.tar.* -C ${TOPDIR}/tmpdir/${SRCDIR}/
-../../patcher
 cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
 ${CPCMD} ${TOPDIR}/kernel/linux/${UARCH}-${SRCDIR}.config ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}/.config
 
@@ -21,19 +20,31 @@ ${GITCMD} add .
 ${CPCMD} ${TOPDIR}/kernel/linux/uksm-4.20.patch ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}/
 ${GITCMD} apply uksm-4.20.patch
 
+${CPCMD} ${TOPDIR}/kernel/linux/bfq-4.20.7.patch ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}/
+${GITCMD} apply bfq-4.20.7.patch
+
 ## Use sed to apply any custom changes to the kernel.
 ##
 
-# Change firmware directory to /boot/firmware
+# Change firmware directory to /boot/firmware.
 
 ${SEDCMD} -i -e "s:/lib/firmware:/boot/firmware:g" drivers/base/firmware_loader/main.c
+${SEDCMD} -i -e "s:/sbin/depmod:depmod:g" Makefile
+${FINDCMD} ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR} -type f -exec ${SEDCMD} -i -e "s:/lib/modules:/boot/modules:g" {} +
 
 # Increase default swappiness to 100, for using ZRAM.
 
 ${SEDCMD} -i -e "s:60:100:g" mm/vmscan.c
 
+# Change module directory to /boot/modules.
+
+${SEDCMD} -i -e "s:/lib/modules:/boot/modules:g" Makefile
+
 ## Build and kernel image and modules.
 ##
+
+# We need to add FINPREFIX to the start of PATH to use custom depmod.
+
 
 ${MKCMD} 
 ${MKDIRCMD} ${TOPDIR}/working.prefix/boot
@@ -44,4 +55,4 @@ elif [ "$UARCH" == "a64" ]; then
 	${CPCMD} arch/arm64/boot/Image ${TOPDIR}/working.prefix/boot/${SRCDIR}
 fi
 
-${MKCMD} modules_install INSTALL_MOD_PATH=${TOPDIR}/working.prefix/
+${MKCMD} PATH=${FINPREFIX}/bin:${FINPREFIX}/sbin:${PATH} modules_install INSTALL_MOD_PATH=${TOPDIR}/working.prefix

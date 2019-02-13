@@ -1,0 +1,17 @@
+${FETCHCMD} https://mirrors.edge.kernel.org/pub/linux/utils/util-linux/v2.33/util-linux-2.33.1.tar.xz
+export SRCDIR=util-linux-2.33.1
+${RMCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${MKDIRCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${TARCMD} -vxf ${TOPDIR}/sources/${SRCDIR}.tar.* -C ${TOPDIR}/tmpdir/${SRCDIR}/
+../patcher
+cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
+
+## Configure, build and install.
+##
+
+${MKDIRCMD} build
+cd build
+../configure --prefix=/ LDFLAGS="-static" --disable-all-programs --without-btrfs --enable-libuuid --enable-libblkid --disable-shared --enable-static &&
+${MKCMD} LDFLAGS="--static" &&
+${MKCMD} DESTDIR=${TOPDIR}/tmpdir/util-linux-install install
+

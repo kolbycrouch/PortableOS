@@ -11,10 +11,13 @@ source ./make.clean
 
 if [ "$FIRST" == "help" ] || [ "$FIRST" == "--help" ] || [ "$FIRST" == "-h" ] || [ -z "$FIRST" ] || [ -z "$SECND" ]; then
         ${ECHOCMD} ""
-        ${ECHOCMD} "    make.package builds either a toolchain or a pkgsrc package" &&
-        ${ECHOCMD} "    for a toolchain the first argument is simply 'toolchain' for a pkgsrc package its 'category/package'" &&
+        ${ECHOCMD} "    make.package builds either a toolchain, a userland, a base system or a pkgsrc package" &&
+        ${ECHOCMD} "    category/package follows the same hierarchy as pkgsrc, for example "editors/nano"" &&
+        ${ECHOCMD} "    base system is a full linux distribution made into an image." &&
+        ${ECHOCMD} "    read over make.config carefully when building a base system." &&
         ${ECHOCMD} "    Usage: ./make.package category/package customname" &&
-        ${ECHOCMD} "    Usage: ./make.package toolchain customname"
+        ${ECHOCMD} "    Usage: ./make.package userland customname"
+        ${ECHOCMD} "    Usage: ./make.package base customname"
         ${ECHOCMD} ""
         exit 0
 fi
@@ -52,6 +55,18 @@ if [ "$FIRST" == "kernel" ]; then
         cd ${TOPDIR} &&
         ./make.preparelib
         exit 0
+fi
+
+if [ "$FIRST" == "base" ]; then
+	export BASEBUILD=1
+	cd ./userland &&
+	source ./make.userland &&
+	cd ${TOPDIR} &&
+	cd ./kernel &&
+	source ./make.kernel &&
+	cd ${TOPDIR} &&
+	source ./make.base
+	exit 0
 fi
 
 export CCPREFIX=$(${WHICHCMD} cc | ${XARGSCMD} ${DIRNAMECMD} | ${XARGSCMD} ${DIRNAMECMD})

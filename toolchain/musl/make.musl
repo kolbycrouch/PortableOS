@@ -19,3 +19,8 @@ cd build
 ../configure --syslibdir=${FINPREFIX}/lib --prefix=${FINPREFIX} --exec-prefix=${FINPREFIX} &&
 ${MKCMD} &&
 ${MKCMD} install 
+
+## Install legacy files.
+##
+
+${CPCMD} ${TOPDIR}/toolchain/musl/legacy/*.h ${FINPREFIX}/include/sys/

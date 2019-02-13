@@ -1,0 +1,32 @@
+#!/bin/sh
+
+. /etc/rc.config
+
+## shell function to start the service.
+##
+
+ runservice () { 
+  getty 38400 tty1
+ }
+
+## shell function to stop the service.
+## 
+
+ stopservice () { 
+  echo hi
+ }
+
+## start/stop logic for this script.
+##
+
+ if [ "$1" = "start" ]; then
+	runservice &
+ elif [ "$1" = "stop" ]; then
+	stopservice &
+ elif [ "$1" = "restart" ]; then
+	stopservice 
+	sleep 1
+	runservice &
+ else
+	echo "Service scripts only accept start/stop/restart arguments."
+ fi

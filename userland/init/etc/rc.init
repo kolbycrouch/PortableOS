@@ -1,0 +1,23 @@
+#!/bin/sh
+
+. /etc/rc.config
+
+## Setup filesystems.
+##
+
+ . /etc/rc.boot/rc.mount
+
+## Start udev to auto-load kernel modules.
+##
+
+ . /etc/rc.boot/rc.udev
+
+## Setup hostname, localtime etc.
+##
+
+ . /etc/rc.boot/rc.misc
+
+## Start getty/login to finish-up the boot.
+##
+
+ . /etc/rc.boot/rc.login

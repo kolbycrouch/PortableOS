@@ -56,7 +56,7 @@ ${STRIPCMD} -s ./lib/*/*/*/*/lib*.so* &>/dev/null | true &&
 if [ -n "$TOOLCHAINBUILD" ]; then
 	:
 else
-	${RMCMD} $(${CATCMD} ../prune/*) &>/dev/null | true
+	${RMCMD} $(${CATCMD} ../package/prune/*) &>/dev/null | true
 fi
 
 cd ${TOPDIR}

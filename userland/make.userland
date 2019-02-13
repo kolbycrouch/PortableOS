@@ -4,12 +4,17 @@ set -o pipefail
 ## Define functions for building each userland.
 ##
 
+build-grub2 () { cd bootloader/grub2 && . make.grub2 && cd $TOPDIR/userland; }
 build-init () { cd init && . make.init && cd $TOPDIR/userland; }
 build-gnu () { cd gnu && . make.gnu && cd $TOPDIR/userland; }
 build-busybox () { cd busybox && . make.busybox && cd $TOPDIR/userland; }
 build-busybox-utils () { cd busybox/busybox-utils && . make.busybox-utils && cd $TOPDIR/userland; }
+build-util-linux-libs () { cd misc/util-linux-libs && . make.util-linux-libs && cd $TOPDIR/userland; }
+build-f2fs-tools () { cd misc/f2fs-tools && . make.f2fs-tools && cd $TOPDIR/userland; }
 build-libnl3 () { cd misc/libnl3 && . make.libnl3 && cd $TOPDIR/userland; }
 build-wpasupplicant () { cd misc/wpasupplicant && . make.wpasupplicant && cd $TOPDIR/userland; }
+build-kmod () { cd misc/kmod && . make.kmod && cd $TOPDIR/userland; }
+build-eudev () { cd misc/eudev && . make.eudev && cd $TOPDIR/userland; }
 
 ## Build userland.
 ##
@@ -17,9 +22,14 @@ build-wpasupplicant () { cd misc/wpasupplicant && . make.wpasupplicant && cd $TO
 if [[ "$USERLAND" == "gnu" ]]; then
  build-init 
  build-busybox-utils 
- build-gnu 
+ build-gnu
+ build-util-linux-libs 
+ build-f2fs-tools
  build-libnl3 
  build-wpasupplicant
+ build-kmod
+ build-eudev
+ build-grub2
 fi
 
 

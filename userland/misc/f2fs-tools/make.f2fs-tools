@@ -1,0 +1,20 @@
+${FETCHCMD} https://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs-tools.git/snapshot/f2fs-tools-1.12.0.tar.gz
+export SRCDIR=f2fs-tools-1.12.0
+${RMCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${MKDIRCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${TARCMD} -vxf ${TOPDIR}/sources/${SRCDIR}.tar.* -C ${TOPDIR}/tmpdir/${SRCDIR}/
+../patcher
+cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
+
+## Configure, build and install.
+##
+
+./autogen.sh
+${CPCMD} ${TOPDIR}/userland/misc/f2fs-tools/gcc-wrapper ${TOPDIR}/tmpdir/f2fs-tools-gcc-wrapper
+${SEDCMD} -i -e "s:REPLACE:${TOPDIR}/tmpdir/util-linux-install:g" ${TOPDIR}/tmpdir/f2fs-tools-gcc-wrapper
+./configure --prefix=${FINPREFIX} libuuid_CFLAGS="-I${TOPDIR}/tmpdir/util-linux-install/include -L${TOPDIR}/tmpdir/util-linux-install/lib" \
+	 libuuid_LIBS="${TOPDIR}/tmpdir/util-linux-install/lib/libuuid.a ${TOPDIR}/tmpdir/util-linux-install/lib/libblkid.a" \
+	 LDFLAGS="-L${TOPDIR}/tmpdir/util-linux-install/lib -static" CC="${TOPDIR}/tmpdir/f2fs-tools-gcc-wrapper" --disable-shared --enable-static &&
+${MKCMD} LDFLAGS="--static" &&
+${MKCMD} install
+

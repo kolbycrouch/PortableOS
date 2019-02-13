@@ -1,0 +1,28 @@
+${FETCHCMD} https://mirrors.edge.kernel.org/pub/linux/utils/kernel/kmod/kmod-26.tar.xz
+export SRCDIR=kmod-26
+${RMCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${MKDIRCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${TARCMD} -vxf ${TOPDIR}/sources/${SRCDIR}.tar.* -C ${TOPDIR}/tmpdir/${SRCDIR}/
+../patcher
+cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
+
+## Replace all instances of /lib/modules with /boot/modules
+##
+
+ ${FINDCMD} ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR} -type f -exec ${SEDCMD} -i -e "s:/lib/modules:/boot/modules:g" {} +
+
+## Configure, build and install.
+##
+
+${MKDIRCMD} build
+cd build
+../configure LDFLAGS="-static" --disable-manpages --disable-test-modules --disable-gtk-doc-html --prefix=${FINPREFIX} --enable-tools &&
+${MKCMD} LDFLAGS="--static" &&
+${MKCMD} install
+
+# Create needed symlinks.
+
+cd ${FINPREFIX}/sbin
+for tool in {ls,ins,rm,dep}mod mod{info,probe}; do
+		${LNCMD} -sf ../bin/kmod ${tool}
+done

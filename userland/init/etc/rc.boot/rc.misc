@@ -1,0 +1,25 @@
+#!/bin/sh
+
+. /etc/rc.config
+
+## Setup loop device.
+##
+
+ ifconfig lo0 up
+
+## Setup hostname. We need rc.config anyways, so no need in using /etc/hostname.
+##
+
+ if [ -n "$HOSTNAME" ]; then
+    printf "%s" "$HOSTNAME" > /proc/sys/kernel/hostname
+ else
+    printf "%s" "Please specify a hostname in /etc/rc.config for the future."
+ fi
+
+##
+##
+
+ if [ -n "$TIMEZONE" ]; then
+    ln -sf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime
+ fi
+

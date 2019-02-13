@@ -1,0 +1,104 @@
+source ./make.config
+export FINPREFIX=$(cat log.prefix)
+export PKGDEFAULTNAME=$(cat log.pkgname)
+
+## Create directories needed for a bootable system.
+##
+
+${MKDIRCMD} working.prefix/dev
+${MKDIRCMD} working.prefix/root
+${MKDIRCMD} working.prefix/proc
+${MKDIRCMD} working.prefix/sys
+${MKDIRCMD} working.prefix/tmp
+${MKDIRCMD} working.prefix/boot
+${MKDIRCMD} working.prefix/boot/grub
+${MKDIRCMD} working.prefix/bin
+${MKDIRCMD} working.prefix/sbin
+${MKDIRCMD} working.prefix/etc
+${MKDIRCMD} working.prefix/var
+${MKDIRCMD} working.prefix/var/run
+
+
+## Create root user and initial groups.
+##
+
+${ECHOCMD} "root::0:0:root:/root:/bin/bash" >> working.prefix/etc/passwd
+
+${CATCMD} > working.prefix/etc/group << "EOF"
+root:x:0:
+bin:x:1:daemon
+sys:x:2:
+kmem:x:3:
+tape:x:4:
+tty:x:5:
+daemon:x:6:
+floppy:x:7:
+disk:x:8:
+lp:x:9:
+dialout:x:10:
+audio:x:11:
+video:x:12:
+utmp:x:13:
+usb:x:14:
+cdrom:x:15:
+adm:x:16:
+messagebus:x:18:
+systemd-journal:x:23:
+input:x:24:
+mail:x:34:
+nogroup:x:99:
+users:x:999:
+EOF
+
+## Strip any binaries that were missed in the build.
+##
+
+${STRIPCMD} -s working.prefix/bin/* &>/dev/null | true &&
+${STRIPCMD} -s working.prefix/sbin/* &>/dev/null | true &&
+${STRIPCMD} -s working.prefix/etc/grub/bin/* &>/dev/null | true &&
+${STRIPCMD} -s working.prefix/etc/grub/sbin/* &>/dev/null | true &&
+
+## Remove useless files and directories.
+##
+
+${RMCMD} working.prefix/lib
+${RMCMD} working.prefix/include
+${RMCMD} working.prefix/share/man
+${RMCMD} working.prefix/share/info
+
+## Create disk and partition it.
+## 
+
+${DDCMD} if=/dev/zero of=PortableOS.img bs=1M count=1000
+${LOSETUPCMD} -D
+${LOSETUPCMD} -P ${BASEDISK} ./PortableOS.img
+
+(
+${ECHOCMD} o # Create a new empty DOS partition table
+${ECHOCMD} n # Add a new partition
+${ECHOCMD} p # Primary partition
+${ECHOCMD} 1 # Partition number
+${ECHOCMD}   # First sector (Accept default: 1)
+${ECHOCMD}   # Last sector (Accept default: varies)
+${ECHOCMD} Y # Clear any signatures
+${ECHOCMD} w # Write changes
+) | ${FDISKCMD} ${BASEDISK}
+
+${LNCMD} -sfn ${BASEDISK}p1 ${BASEDISK}1
+
+${CATCMD} > working.prefix/boot/grub/device.map << EOF 
+(hd0) ${BASEDISK}
+EOF
+
+(${ECHOCMD} y) | ${FINPREFIX}/sbin/mkfs.f2fs ${BASEDISK}1
+
+## Mount image, copy files and install bootloader into it.
+##
+
+${MKDIRCMD} mnt-install
+${MOUNTCMD} ${BASEDISK}1 mnt-install
+${CPCMD} working.prefix/* mnt-install/
+${GRUBINSTCMD} --no-floppy --grub-mkdevicemap=${TOPDIR}/mnt-install/boot/grub/device.map --root-directory=${TOPDIR}/mnt-install ${BASEDISK}
+${CPCMD} package/grub.cfg.img mnt-install/boot/grub/grub.cfg 
+${CPCMD} mnt-install/boot/linux-* mnt-install/boot/linux
+${UMOUNTCMD} mnt-install

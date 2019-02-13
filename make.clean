@@ -6,4 +6,4 @@ source ./make.config
 ## Remove temp files.
 ##
 
-${RMCMD} tmpdir log.prefix log.pkgname
+${RMCMD} tmpdir log.prefix log.pkgname mnt-install

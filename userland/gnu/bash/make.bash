@@ -1,5 +1,5 @@
-${FETCHCMD} https://ftp.gnu.org/gnu/bash/bash-4.4.18.tar.gz
-export SRCDIR=bash-4.4.18
+${FETCHCMD} https://ftp.gnu.org/gnu/bash/bash-5.0.tar.gz
+export SRCDIR=bash-5.0
 ${RMCMD} ${TOPDIR}/tmpdir/${SRCDIR}
 ${MKDIRCMD} ${TOPDIR}/tmpdir/${SRCDIR}
 ${TARCMD} -vxf ${TOPDIR}/sources/${SRCDIR}.tar.* -C ${TOPDIR}/tmpdir/${SRCDIR}/

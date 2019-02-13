@@ -1,0 +1,19 @@
+#!/bin/sh
+
+. /etc/rc.config
+
+
+## Send TERM signals to all processes.
+## Then send KILL signals if they don't listen.
+
+ pkill --inverse -s0,1 -TERM
+ sleep 2
+ pkill --inverse -s0,1 -KILL
+
+## Handle syncing/unmounting of filesystems here.
+##
+ 
+ echo "Syncing filesystems"
+ swapoff -a
+ umount -r -a -t nosysfs,noproc,nodevtmpfs,notmpfs
+ mount -o remount,ro /
