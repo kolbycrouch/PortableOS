@@ -7,6 +7,6 @@ ${TARCMD} -vxf ${TOPDIR}/sources/${SRCDIR}.tar.* -C ${TOPDIR}/tmpdir/${SRCDIR}/
 cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
 ${MKDIRCMD} build
 cd build
-../configure --prefix=${FINPREFIX} --host=$HOSTARCH --build=$HOSTARCH --disable-shared --enable-static &&
+../configure CFLAGS="-fPIC" --prefix=${FINPREFIX} --host=$HOSTARCH --build=$HOSTARCH --disable-shared --enable-static &&
 ${MKCMD} &&
 ${MKCMD} install 

@@ -59,6 +59,16 @@ else
 	${RMCMD} $(${CATCMD} ../package/prune/*) &>/dev/null | true
 fi
 
+if [ -n "$KERNELBUILD" ]; then
+	${RMCMD} ${TOPDIR}/working.prefix/bin
+	${RMCMD} ${TOPDIR}/working.prefix/sbin
+	${RMCMD} ${TOPDIR}/working.prefix/lib
+	${RMCMD} ${TOPDIR}/working.prefix/libexec
+	${RMCMD} ${TOPDIR}/working.prefix/share
+	${RMCMD} ${TOPDIR}/working.prefix/include
+	${RMCMD} ${TOPDIR}/working.prefix/etc
+fi
+
 cd ${TOPDIR}
 
 ${RMCMD} working.prefix/lib64

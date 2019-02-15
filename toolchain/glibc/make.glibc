@@ -34,4 +34,4 @@ ${MKCMD} &&
 ${MKCMD} install &&
 ${CPCMD} ${FINPREFIX}/.tmpglibcinc/* ${FINPREFIX}/include/ &&
 ${RMCMD} ${FINPREFIX}/.tmpglibcinc/ 
-
+${SEDCMD} -i -e "s:lib64:lib:g" ${FINPREFIX}/bin/ldd

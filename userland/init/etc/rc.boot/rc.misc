@@ -5,7 +5,7 @@
 ## Setup loop device.
 ##
 
- ifconfig lo0 up
+ ifconfig lo up
 
 ## Setup hostname. We need rc.config anyways, so no need in using /etc/hostname.
 ##

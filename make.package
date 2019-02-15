@@ -50,14 +50,17 @@ fi
 
 if [ "$FIRST" == "kernel" ]; then
         export KERNELBUILD=1
+	cd ./userland &&
+	source ./make.userland &&
+	cd ${TOPDIR} &&
         cd ./kernel &&
         source ./make.kernel &&
         cd ${TOPDIR} &&
-        ./make.preparelib
         exit 0
 fi
 
 if [ "$FIRST" == "base" ]; then
+	export USERLANDBUILD=1
 	export BASEBUILD=1
 	cd ./userland &&
 	source ./make.userland &&

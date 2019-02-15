@@ -2,9 +2,10 @@
 
 . /etc/rc.config
 
-## Setup loop device.
+## Setup udev.
 ##
-
+ 
+ mkdir /tmp/run.udev
  udevd --daemon
  udevadm trigger --action=add --type=subsystems
  udevadm trigger --action=add --type=devices

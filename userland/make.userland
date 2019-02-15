@@ -18,18 +18,23 @@ build-eudev () { cd misc/eudev && . make.eudev && cd $TOPDIR/userland; }
 
 ## Build userland.
 ##
-
-if [[ "$USERLAND" == "gnu" ]]; then
- build-init 
- build-busybox-utils 
- build-gnu
- build-util-linux-libs 
- build-f2fs-tools
- build-libnl3 
- build-wpasupplicant
- build-kmod
- build-eudev
- build-grub2
+if [[ "$USERLANDBUILD" == "1" ]]; then
+ if [[ "$USERLAND" == "gnu" ]]; then
+  build-init 
+  build-busybox-utils 
+  build-gnu
+  build-util-linux-libs 
+  build-f2fs-tools
+  build-libnl3 
+  build-wpasupplicant
+  build-kmod
+  build-eudev
+  build-grub2
+ fi
 fi
+## Userland tools for kernel builds.
+##
 
-
+if [[ "$KERNELBUILD" == "1" ]]; then
+ build-kmod
+fi

@@ -22,6 +22,7 @@ ${MKCMD} install
 
 # Create needed symlinks.
 
+${MKDIRCMD} ${FINPREFIX}/sbin
 cd ${FINPREFIX}/sbin
 for tool in {ls,ins,rm,dep}mod mod{info,probe}; do
 		${LNCMD} -sf ../bin/kmod ${tool}
