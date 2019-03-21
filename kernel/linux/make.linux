@@ -1,44 +1,28 @@
-${FETCHCMD} https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.20.7.tar.xz
-export SRCDIR=linux-4.20.7
+${FETCHCMD} https://git.kernel.org/torvalds/t/linux-5.1-rc1.tar.gz
+export SRCDIR=linux-5.1-rc1
 ${RMCMD} ${TOPDIR}/tmpdir/${SRCDIR}
 ${MKDIRCMD} ${TOPDIR}/tmpdir/${SRCDIR}
 ${TARCMD} -vxf ${TOPDIR}/sources/${SRCDIR}.tar.* -C ${TOPDIR}/tmpdir/${SRCDIR}/
 cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
 ${CPCMD} ${TOPDIR}/kernel/linux/${UARCH}-${SRCDIR}.config ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}/.config
 
-## Initialize kernel build directory as a git repo.
-## So we can apply git patches.
-
-${GITCMD} init
-${GITCMD} add .
-
-## Copy git patches into build directory and apply them.
-##
-
-# Ultra KSM for better memory deduplication.
-
-${CPCMD} ${TOPDIR}/kernel/linux/uksm-4.20.patch ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}/
-${GITCMD} apply uksm-4.20.patch
-
-${CPCMD} ${TOPDIR}/kernel/linux/bfq-4.20.7.patch ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}/
-${GITCMD} apply bfq-4.20.7.patch
-
 ## Use sed to apply any custom changes to the kernel.
 ##
 
-# Change firmware directory to /boot/firmware.
+# Change firmware directory to /boot/firmware. # TODO
+# Look for first depmod binary in path.
 
-${SEDCMD} -i -e "s:/lib/firmware:/boot/firmware:g" drivers/base/firmware_loader/main.c
+#${SEDCMD} -i -e "s:/lib/firmware:/boot/firmware:g" drivers/base/firmware_loader/main.c
 ${SEDCMD} -i -e "s:/sbin/depmod:depmod:g" Makefile
-${FINDCMD} ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR} -type f -exec ${SEDCMD} -i -e "s:/lib/modules:/boot/modules:g" {} +
+#${FINDCMD} ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR} -type f -exec ${SEDCMD} -i -e "s:/lib/modules:/boot/modules:g" {} +
 
 # Increase default swappiness to 100, for using ZRAM.
 
 ${SEDCMD} -i -e "s:60:100:g" mm/vmscan.c
 
-# Change module directory to /boot/modules.
+# Change module directory to /boot/modules. # TODO
 
-${SEDCMD} -i -e "s:/lib/modules:/boot/modules:g" Makefile
+#${SEDCMD} -i -e "s:/lib/modules:/boot/modules:g" Makefile
 
 ## Build and kernel image and modules.
 ##
