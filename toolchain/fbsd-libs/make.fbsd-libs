@@ -1,0 +1,83 @@
+${FETCHCMD} https://ftp.freebsd.org/pub/FreeBSD/snapshots/amd64/13.0-CURRENT/src.txz
+export SRCDIR=src
+${RMCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${MKDIRCMD} ${TOPDIR}/tmpdir/${SRCDIR}
+${TARCMD} -vxf ${TOPDIR}/sources/${SRCDIR}.txz -C ${TOPDIR}/tmpdir/${SRCDIR}/
+cd ${TOPDIR}/tmpdir/${SRCDIR}/usr/${SRCDIR}
+
+## Setup environment for building freebsd base libs.
+##
+
+${CPCMD} ${TOPDIR}/toolchain/fbsd-libs/src-env.conf ${TOPDIR}/tmpdir/${SRCDIR}/src-env.conf
+${SEDCMD} -i -e "s:OBJREPLACE:${TOPDIR}/tmpdir/fbsdobj:g" ${TOPDIR}/tmpdir/${SRCDIR}/src-env.conf
+${SEDCMD} -i -e "s:REPLACE:${FINPREFIX}:g" ${TOPDIR}/tmpdir/${SRCDIR}/src-env.conf
+${MKDIRCMD} ${TOPDIR}/tmpdir/fbsdobj
+
+export SRC_ENV_CONF="${TOPDIR}/tmpdir/${SRCDIR}/src-env.conf"
+export SRCCONF="${TOPDIR}/tmpdir/${SRCDIR}/src.conf"
+
+source ${TOPDIR}/make.fbsd
+
+## Build base libs and includes.
+##
+
+cd include
+${BMKCMD}
+${BMKCMD} install
+cd ../
+
+cd lib/csu
+${BMKCMD}
+${BMKCMD} install
+cd ../../
+
+cd lib/libnetbsd
+${BMKCMD}
+cd ../../
+
+cd lib/libc
+${BMKCMD}
+${BMKCMD} install
+cd ../../
+
+cd libexec/rtld-elf
+${SEDCMD} -i -e "s:/libexec:/lib:g" Makefile 
+${SEDCMD} -i -e "/SYMLINKS=/,+0d" Makefile
+${SEDCMD} -i -e "/beforeinstall:/,+3d" Makefile
+${SEDCMD} -i -e "s:/libexec:${FINPREFIX}/lib:g" paths.h
+${SEDCMD} -i -e "s:/etc:${FINPREFIX}/etc:g" paths.h
+${SEDCMD} -i -e "s:/var:${FINPREFIX}/var:g" paths.h
+${SEDCMD} -i -e "s,/lib/casper:/lib:/usr/lib,${FINPREFIX}/lib,g" paths.h
+${BMKCMD} 
+${BMKCMD} install 
+cd ../../
+
+cd lib/libc_nonshared
+${BMKCMD}
+${BMKCMD} install
+cd ../../
+
+cd lib/msun
+${BMKCMD}
+${BMKCMD} install
+cd ../../
+
+cd lib/libdl
+${BMKCMD}
+${BMKCMD} install
+cd ../../
+
+cd lib/librt
+${BMKCMD}
+${BMKCMD} install
+cd ../../
+
+cd lib/libutil
+${BMKCMD}
+${BMKCMD} install
+cd ../../
+
+cd lib/libarchive
+${BMKCMD}
+${BMKCMD} install
+cd ../../

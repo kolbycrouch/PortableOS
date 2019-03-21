@@ -1,0 +1,21 @@
+## We need this to run scripts stand-alone.
+##
+
+source ./make.config &>/dev/null || true
+
+## Create directory structure for freebsd components.
+## Their makefiles expect them to already be there.
+
+${MKDIRCMD} ${FINPREFIX}/lib
+${MKDIRCMD} ${FINPREFIX}/bin
+${MKDIRCMD} ${FINPREFIX}/sbin
+${MKDIRCMD} ${FINPREFIX}/share
+${MKDIRCMD} ${FINPREFIX}/include
+${MKDIRCMD} ${FINPREFIX}/share/man/man1
+${MKDIRCMD} ${FINPREFIX}/share/man/man2
+${MKDIRCMD} ${FINPREFIX}/share/man/man3
+${MKDIRCMD} ${FINPREFIX}/share/man/man5
+${MKDIRCMD} ${FINPREFIX}/share/man/man7
+
+
+
