@@ -9,16 +9,20 @@ cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
 ## Replace all instances of /lib/modules with /boot/modules
 ##
 
- ${FINDCMD} ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR} -type f -exec ${SEDCMD} -i -e "s:/lib/modules:/boot/modules:g" {} +
+# ${FINDCMD} ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR} -type f -exec ${SEDCMD} -i -e "s:/lib/modules:/boot/modules:g" {} + # Broken
 
 ## Configure, build and install.
 ##
 
 ${MKDIRCMD} build
 cd build
-../configure LDFLAGS="-static" --disable-manpages --disable-test-modules --disable-gtk-doc-html --prefix=${FINPREFIX} --enable-tools &&
-${MKCMD} LDFLAGS="--static" &&
+../configure --disable-manpages --disable-test-modules --disable-gtk-doc-html --prefix=${FINPREFIX} --enable-tools &&
+${MKCMD} &&
+#${MKDIRCMD} ${TOPDIR}/tmpdir/kmod-install
+#${MKCMD} DESTDIR=${TOPDIR}/tmpdir/kmod-install install
 ${MKCMD} install
+#${CPCMD} ${TOPDIR}/tmpdir/kmod-install/bin/* ${FINPREFIX}/bin/
+#${CPCMD} ${TOPDIR}/tmpdir/kmod-install/sbin/* ${FINPREFIX}/sbin/
 
 # Create needed symlinks.
 

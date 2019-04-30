@@ -1,8 +1,1 @@
-ln -sfn /tmp/.mount_REPLACEPKGNAME* REPLACEPREFIX
-cd $OWD
-unset LD_LIBRARY_PATH
-export PATH=REPLACEPREFIX/bin:REPLACEPREFIX/sbin:$PATH
-export CC=REPLACEPREFIX/bin/gcc
-export CXX=REPLACEPREFIX/bin/g++
-export PKG_CONFIG_LIBDIR=REPLACEPREFIX/lib/pkgconfig
-$SHELL
+echo "export PATH=REPLACE/bin:REPLACE/sbin:$PATH" >> /tmp/.pkg-paths

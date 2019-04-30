@@ -20,13 +20,15 @@ ${SEDCMD} -i -e "s:/run/udev:/tmp/run.udev:g" src/udev/udevd.c
 ./autogen.sh
 ${MKDIRCMD} build
 cd build
-../configure --with-rootrundir=/var/run --enable-hwdb --disable-manpages --disable-selinux --disable-blkid --enable-shared \
-	 --enable-static --prefix=/ --with-rootlibdir=/include --with-rootlibexecdir=/etc/udev 
-${MKCMD} LDFLAGS="--static" 
-${MKDIRCMD} ${TOPDIR}/tmpdir/eudev-install
-${MKCMD} DESTDIR=${TOPDIR}/tmpdir/eudev-install install 
-${RMCMD} ${TOPDIR}/tmpdir/eudev-install/sbin/udevadm
-${RMCMD} ${TOPDIR}/tmpdir/eudev-install/lib
-${RMCMD} ${TOPDIR}/tmpdir/eudev-install/share
-${RMCMD} ${TOPDIR}/tmpdir/eudev-install/include
-${CPCMD} ${TOPDIR}/tmpdir/eudev-install/* ${TOPDIR}/working.prefix/
+../configure PKG_CONFIG_PATH=${FINPREFIX}/lib/pkgconfig --with-rootrundir=/var/run --enable-hwdb --disable-manpages --disable-selinux --disable-blkid --enable-shared \
+	 --enable-static --enable-kmod --prefix=${FINPREFIX} --with-rootlibdir=${FINPREFIX}/lib --with-rootlibexecdir=${FINPREFIX}/libexec 
+${MKCMD}
+${MKCMD} install
+
+#${MKDIRCMD} ${TOPDIR}/tmpdir/eudev-install
+#${MKCMD} DESTDIR=${TOPDIR}/tmpdir/eudev-install install 
+#${RMCMD} ${TOPDIR}/tmpdir/eudev-install/sbin/udevadm
+#${RMCMD} ${TOPDIR}/tmpdir/eudev-install/lib
+#${RMCMD} ${TOPDIR}/tmpdir/eudev-install/share
+#${RMCMD} ${TOPDIR}/tmpdir/eudev-install/include
+#${CPCMD} ${TOPDIR}/tmpdir/eudev-install/* ${TOPDIR}/working.prefix/

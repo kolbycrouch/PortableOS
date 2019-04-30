@@ -36,7 +36,10 @@ ${SEDCMD} -i -e "s:REPLACE:${PKGDEFAULTNAME}:g" tmpdir/run.c &&
 ##
 
 ${CPCMD} appimage/AppRun-${PLATFORM}-${UARCH} working.prefix/AppRun &&
-${CPCMD} appimage/run-${PLATFORM}-${UARCH} working.prefix/run &&
+${CPCMD} appimage/run.c tmpdir/run.c &&
+${SEDCMD} -i -e "s:REPLACE:${PKGDEFAULTNAME}:g" tmpdir/run.c
+${CC} -static tmpdir/run.c -o working.prefix/run &&
+#${CPCMD} appimage/run-${PLATFORM}-${UARCH} working.prefix/run &&
 
 ## Strip binaries and shared libraries in the AppImage.
 ##
@@ -77,14 +80,16 @@ ${RMCMD} working.prefix/lib64
 ##
 
 if [ -n "$TOOLCHAINBUILD" ]; then
-        ${CPCMD} appimage/setup.sh working.prefix/setup.sh
+        ${CPCMD} appimage/setup.sh.sdk working.prefix/setup.sh
 	${SEDCMD} -i -e "s:REPLACEPREFIX:${FINPREFIX}:g" working.prefix/setup.sh
 	${SEDCMD} -i -e "s:REPLACEPKGNAME:${PKGDEFAULTNAME}:g" working.prefix/setup.sh
 else
-	${TOUCHCMD} working.prefix/setup.sh
+	${CPCMD} appimage/setup.sh working.prefix/setup.sh
+	${SEDCMD} -i -e "s:REPLACE:${FINPREFIX}:g" working.prefix/setup.sh
 fi
 
 ${CPCMD} appimage/template.desktop working.prefix/${PKGDEFAULTNAME}.desktop | true &&
+${SEDCMD} -i -e "s:REPLACE:${PKGDEFAULTNAME}:g" working.prefix/${PKGDEFAULTNAME}.desktop &&
 ${TOUCHCMD} working.prefix/null.png &&
 ${CHMODCMD} +x working.prefix/setup.sh &&
 ${ECHOCMD} "Package build complete!" &&

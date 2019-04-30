@@ -1,10 +1,13 @@
-${FETCHCMD} https://ftp.gnu.org/gnu/binutils/binutils-2.31.tar.xz
-export SRCDIR=binutils-2.31
+${FETCHCMD} https://ftp.gnu.org/gnu/binutils/binutils-2.32.tar.xz
+export SRCDIR=binutils-2.32
 ${RMCMD} ${TOPDIR}/tmpdir/${SRCDIR}
 ${MKDIRCMD} ${TOPDIR}/tmpdir/${SRCDIR}
 ${TARCMD} -vxf ${TOPDIR}/sources/${SRCDIR}.tar.* -C ${TOPDIR}/tmpdir/${SRCDIR}/ 
 ../patcher
 cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
+
+${SEDCMD} -i -e "s:NATIVE_LIB_DIRS='/usr/local/lib /lib /usr/lib':NATIVE_LIB_DIRS='${FINPREFIX}/lib':g" ld/configure.tgt
+
 ${MKDIRCMD} build
 cd build
 CFLAGS+="-B${FINPREFIX}"

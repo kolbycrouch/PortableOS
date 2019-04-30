@@ -1,5 +1,5 @@
-${FETCHCMD} https://git.kernel.org/torvalds/t/linux-5.1-rc1.tar.gz
-export SRCDIR=linux-5.1-rc1
+${FETCHCMD} https://git.kernel.org/torvalds/t/linux-5.1-rc3.tar.gz
+export SRCDIR=linux-5.1-rc3
 ${RMCMD} ${TOPDIR}/tmpdir/${SRCDIR}
 ${MKDIRCMD} ${TOPDIR}/tmpdir/${SRCDIR}
 ${TARCMD} -vxf ${TOPDIR}/sources/${SRCDIR}.tar.* -C ${TOPDIR}/tmpdir/${SRCDIR}/

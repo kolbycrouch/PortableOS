@@ -4,6 +4,7 @@ set -o pipefail
 ## Define functions for building each userland.
 ##
 
+build-musl () { cd ../toolchain/musl && . make.musl && cd $TOPDIR/userland; }
 build-grub2 () { cd bootloader/grub2 && . make.grub2 && cd $TOPDIR/userland; }
 build-init () { cd init && . make.init && cd $TOPDIR/userland; }
 build-gnu () { cd gnu && . make.gnu && cd $TOPDIR/userland; }
@@ -18,6 +19,7 @@ build-eudev () { cd misc/eudev && . make.eudev && cd $TOPDIR/userland; }
 
 ## Build userland.
 ##
+
 if [[ "$USERLANDBUILD" == "1" ]]; then
  if [[ "$USERLAND" == "gnu" ]]; then
   build-init 
@@ -31,7 +33,16 @@ if [[ "$USERLANDBUILD" == "1" ]]; then
   build-eudev
   build-grub2
  fi
+ if [[ "$PLATFORM" == "linux" ]]; then
+  build-musl
+  export CFLAGS="-Wl,--dynamic-linker=${FINPREFIX}/lib/libc.so -Wno-error"
+  export CXXFLAGS="-Wl,--dynamic-linker=${FINPREFIX}/lib/libc.so"
+  export LDFLAGS="-Wl,--dynamic-linker=${FINPREFIX}/lib/libc.so"
+  build-kmod
+  build-eudev
+ fi
 fi
+
 ## Userland tools for kernel builds.
 ##
 
