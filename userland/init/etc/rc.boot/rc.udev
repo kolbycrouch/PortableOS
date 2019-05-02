@@ -6,6 +6,8 @@
 ##
  
  mkdir /tmp/run.udev
+ udev
+ source /tmp/.pkg-paths
  udevd --daemon
  udevadm trigger --action=add --type=subsystems
  udevadm trigger --action=add --type=devices

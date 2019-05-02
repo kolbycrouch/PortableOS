@@ -28,6 +28,7 @@ echo ${PKGDEFAULTNAME} > log.pkgname
 source ./make.prefix
 
 ${MKDIRCMD} sources &&
+${MKDIRCMD} release
 ${MKDIRCMD} tmpdir &&
 	
 if [ "$FIRST" == "toolchain" ]; then
@@ -40,6 +41,13 @@ if [ "$FIRST" == "toolchain" ]; then
 fi
 
 if [ "$FIRST" == "userland" ]; then
+ if [ "$LINUXUSERLAND" == "1" ]; then
+	 cd ./userland &&
+	 source ./make.userland &&
+	 unset LINUXUSERLAND
+	 cd ${TOPDIR} &&
+	 ./make.preparelib
+ fi
 	export USERLANDBUILD=1
 	cd ./userland &&
 	source ./make.userland &&

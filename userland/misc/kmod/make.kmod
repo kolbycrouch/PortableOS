@@ -16,8 +16,8 @@ cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
 
 ${MKDIRCMD} build
 cd build
-../configure --disable-manpages --disable-test-modules --disable-gtk-doc-html --prefix=${FINPREFIX} --enable-tools &&
-${MKCMD} &&
+../configure LDFLAGS="-static" --disable-manpages --disable-test-modules --disable-gtk-doc-html --prefix=${FINPREFIX} --enable-tools &&
+${MKCMD} LDFLAGS="--static" &&
 #${MKDIRCMD} ${TOPDIR}/tmpdir/kmod-install
 #${MKCMD} DESTDIR=${TOPDIR}/tmpdir/kmod-install install
 ${MKCMD} install

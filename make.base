@@ -50,6 +50,11 @@ nogroup:x:99:
 users:x:999:
 EOF
 
+## Add udev to Linux builds.
+##
+
+${CPCMD} release/udev working.prefix/sbin/udev
+
 ## Strip any binaries that were missed in the build.
 ##
 
@@ -69,9 +74,9 @@ ${RMCMD} working.prefix/share/info
 ## Create disk and partition it.
 ## 
 
-${DDCMD} if=/dev/zero of=PortableOS.img bs=1M count=1000
+${DDCMD} if=/dev/zero of=./release/PortableOS.img bs=1M count=1000
 ${LOSETUPCMD} -D
-${LOSETUPCMD} -P ${BASEDISK} ./PortableOS.img
+${LOSETUPCMD} -P ${BASEDISK} ./release/PortableOS.img
 
 (
 ${ECHOCMD} o # Create a new empty DOS partition table
@@ -96,7 +101,7 @@ EOF
 ##
 
 ${MKDIRCMD} mnt-install
-${MOUNTCMD} ${BASEDISK}1 mnt-install
+${MOUNTCMD} -t f2fs ${BASEDISK}1 mnt-install
 ${CPCMD} working.prefix/* mnt-install/
 ${GRUBINSTCMD} --no-floppy --grub-mkdevicemap=${TOPDIR}/mnt-install/boot/grub/device.map --root-directory=${TOPDIR}/mnt-install ${BASEDISK}
 ${CPCMD} package/grub.cfg.img mnt-install/boot/grub/grub.cfg 

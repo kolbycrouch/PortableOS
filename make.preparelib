@@ -39,7 +39,12 @@ ${CPCMD} appimage/AppRun-${PLATFORM}-${UARCH} working.prefix/AppRun &&
 ${CPCMD} appimage/run.c tmpdir/run.c &&
 ${SEDCMD} -i -e "s:REPLACE:${PKGDEFAULTNAME}:g" tmpdir/run.c
 ${CC} -static tmpdir/run.c -o working.prefix/run &&
-#${CPCMD} appimage/run-${PLATFORM}-${UARCH} working.prefix/run &&
+
+## Compile switch binary.
+## 
+
+${CPCMD} appimage/switch.c tmpdir/switch.c &&
+${CC} -static tmpdir/switch.c -o working.prefix/${PKGDEFAULTNAME}-switch &&
 
 ## Strip binaries and shared libraries in the AppImage.
 ##
@@ -85,12 +90,15 @@ if [ -n "$TOOLCHAINBUILD" ]; then
 	${SEDCMD} -i -e "s:REPLACEPKGNAME:${PKGDEFAULTNAME}:g" working.prefix/setup.sh
 else
 	${CPCMD} appimage/setup.sh working.prefix/setup.sh
+	${SEDCMD} -i -e "s:PKGREPLACE:${PKGDEFAULTNAME}:g" working.prefix/setup.sh
 	${SEDCMD} -i -e "s:REPLACE:${FINPREFIX}:g" working.prefix/setup.sh
+
 fi
 
 ${CPCMD} appimage/template.desktop working.prefix/${PKGDEFAULTNAME}.desktop | true &&
 ${SEDCMD} -i -e "s:REPLACE:${PKGDEFAULTNAME}:g" working.prefix/${PKGDEFAULTNAME}.desktop &&
 ${TOUCHCMD} working.prefix/null.png &&
 ${CHMODCMD} +x working.prefix/setup.sh &&
-${ECHOCMD} "Package build complete!" &&
-${ECHOCMD} "Please modify the .desktop and setup.sh files in working.prefix/, then run ./make.appimage"
+./appimage/AppImageTool-linux-${UARCH} working.prefix release/${PKGDEFAULTNAME}
+${ECHOCMD} "Package build complete!" 
+#${ECHOCMD} "Please modify the .desktop and setup.sh files in working.prefix/, then run ./make.appimage"

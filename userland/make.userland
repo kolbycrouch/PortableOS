@@ -17,29 +17,34 @@ build-wpasupplicant () { cd misc/wpasupplicant && . make.wpasupplicant && cd $TO
 build-kmod () { cd misc/kmod && . make.kmod && cd $TOPDIR/userland; }
 build-eudev () { cd misc/eudev && . make.eudev && cd $TOPDIR/userland; }
 
+## Platform specific userland.
+##
+
+if [[ "$LINUXUSERLAND" == "1" ]]; then
+ build-musl
+ export CFLAGS="-Wl,--dynamic-linker=${FINPREFIX}/lib/libc.so -Wno-error"
+ export CXXFLAGS="-Wl,--dynamic-linker=${FINPREFIX}/lib/libc.so"
+ export LDFLAGS="-Wl,--dynamic-linker=${FINPREFIX}/lib/libc.so"
+ build-kmod
+ build-eudev
+fi
+
 ## Build userland.
 ##
 
 if [[ "$USERLANDBUILD" == "1" ]]; then
  if [[ "$USERLAND" == "gnu" ]]; then
   build-init 
-  build-busybox-utils 
+  build-busybox-utils
+  if [[ "$PLATFORM" == "linux" ]]; then
+	build-kmod
+  fi 
   build-gnu
   build-util-linux-libs 
   build-f2fs-tools
   build-libnl3 
   build-wpasupplicant
-  build-kmod
-  build-eudev
   build-grub2
- fi
- if [[ "$PLATFORM" == "linux" ]]; then
-  build-musl
-  export CFLAGS="-Wl,--dynamic-linker=${FINPREFIX}/lib/libc.so -Wno-error"
-  export CXXFLAGS="-Wl,--dynamic-linker=${FINPREFIX}/lib/libc.so"
-  export LDFLAGS="-Wl,--dynamic-linker=${FINPREFIX}/lib/libc.so"
-  build-kmod
-  build-eudev
  fi
 fi
 

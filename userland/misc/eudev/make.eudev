@@ -12,15 +12,15 @@ cd ${TOPDIR}/tmpdir/${SRCDIR}/${SRCDIR}
 
 # Use /tmp instead of /run.
 
-${SEDCMD} -i -e "s:/run/udev:/tmp/run.udev:g" rule_generator/rule_generator.functions 
-${SEDCMD} -i -e "s:/run/udev:/tmp/run.udev:g" src/udev/udevd.c
+#${SEDCMD} -i -e "s:/run/udev:/tmp/run.udev:g" rule_generator/rule_generator.functions 
+#${SEDCMD} -i -e "s:/run/udev:/tmp/run.udev:g" src/udev/udevd.c
 
 ## Configure, build and install.
 ##
 ./autogen.sh
 ${MKDIRCMD} build
 cd build
-../configure PKG_CONFIG_PATH=${FINPREFIX}/lib/pkgconfig --with-rootrundir=/var/run --enable-hwdb --disable-manpages --disable-selinux --disable-blkid --enable-shared \
+../configure PKG_CONFIG_PATH=${FINPREFIX}/lib/pkgconfig --with-rootrundir=/run --enable-hwdb --disable-manpages --disable-selinux --disable-blkid --enable-shared \
 	 --enable-static --enable-kmod --prefix=${FINPREFIX} --with-rootlibdir=${FINPREFIX}/lib --with-rootlibexecdir=${FINPREFIX}/libexec 
 ${MKCMD}
 ${MKCMD} install

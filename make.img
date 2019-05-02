@@ -1,0 +1,15 @@
+set -e 
+set -o pipefail
+export TOPDIR=$(pwd)
+
+#shift $#
+source ./make.config
+
+if [ "$PLATFORM" == "linux" ]; then
+ export LINUXUSERLAND=1
+ ./make.package userland udev
+ unset LINUXUSERLAND
+ ./make.package base portable-linux
+fi
+
+
